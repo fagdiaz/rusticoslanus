@@ -1,0 +1,13 @@
+<p>products works!</p>
+<div class="row">
+    <div class="col-sm col-xs-12">
+        <div class="row">
+            <input type="text" [(ngModel)]="busqueda">
+        </div>
+        <div class="row">
+            <div *ngFor="let prod of this.products|filtroProduct :busqueda "   class="col-4">
+                <app-product  [myProduct]="prod"></app-product>
+            </div>
+        </div>                
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<div>
+  <p>signin works!</p>
+
+  <mat-card>
+    <mat-card-content>
+      <mat-form-field>
+        <input matInput placeholder="Correo electrónico" type="email" [(ngModel)]="user.email">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Contraseña" type="password" [(ngModel)]="user.pass">
+      </mat-form-field>
+
+      <div class="button-container">
+        <button routerLink="/signup" mat-flat-button color="accent">Registrarse</button>
+        <button mat-raised-button color="primary" (click)="signin()">Ingresar</button>
+        <button mat-raised-button color="#C69749" (click)="delete()">Quitar</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <router-outlet></router-outlet>
+
+  <div *ngIf="signin">
+    Bienvenido
+  </div>
+</div>

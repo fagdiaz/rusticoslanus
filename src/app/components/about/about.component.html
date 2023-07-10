@@ -1,0 +1,89 @@
+<p>about works!</p>
+<p>Lorem, ipsum dolor sit amet consectetur 
+    adipisicing elit. Obcaecati qui facere velit dignissimos
+     reiciendis corporis magnam, animi amet rerum rem laudantium 
+     distinctio adipisci quibusdam possimus iure fugit dolorem ut error!</p>
+     <mat-card >
+        <mat-card-content>
+          <mat-form-field>
+            <input matInput placeholder="Correo electrónico" type="email">
+          </mat-form-field>
+    
+          <mat-form-field>
+            <input matInput placeholder="Contraseña" type="password" >
+          </mat-form-field>
+    
+          <div class="button-container">
+            <button routerLink="/signup" mat-flat-button color="accent">Registrarse</button>
+            <button mat-raised-button color="primary">Ingresar</button>
+            <button mat-raised-button color="#C69749" >Quitar</button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="card">
+        <mat-card-content>
+          <h2>Registro</h2>
+      
+          <form>
+            <mat-form-field class="example-full-width">
+              <mat-label>Email</mat-label>
+              <input type="email" matInput placeholder="Ex. pat@example.com">
+              <mat-hint>Ingrese su email</mat-hint>
+              <mat-error>Ingrese un email válido</mat-error>
+              <mat-error>El email es <strong>obligatorio</strong></mat-error>
+            </mat-form-field>
+      
+            <mat-form-field>
+              <input matInput placeholder="Contraseña" type="password" required>
+              <mat-icon matSuffix>visibility</mat-icon>
+              <mat-hint>Escriba su contraseña</mat-hint>
+            </mat-form-field>
+      
+            <mat-form-field>
+              <input matInput placeholder="Confirmar Contraseña" type="password" required>
+              <mat-icon matSuffix>visibility</mat-icon>
+              <mat-hint>Confirme su contraseña</mat-hint>
+              <mat-error>Las contraseñas no coinciden</mat-error>
+            </mat-form-field>
+      
+            <mat-form-field>
+              <input matInput placeholder="DNI" type="number">
+            </mat-form-field>
+      
+            <mat-form-field>
+              <mat-label>Provincia</mat-label>
+              <mat-select>
+                <mat-option value="CABA">CABA</mat-option>
+                <mat-option value="GBA">GBA</mat-option>
+                <mat-option value="Buenos Aires">Buenos Aires</mat-option>
+                <mat-option value="Catamarca">Catamarca</mat-option>
+                <mat-option value="Chaco">Chaco</mat-option>
+                <mat-option value="Chubut">Chubut</mat-option>
+                <mat-option value="Córdoba">Córdoba</mat-option>
+                <mat-option value="Corrientes">Corrientes</mat-option>
+                <mat-option value="Entre Ríos">Entre Ríos</mat-option>
+                <mat-option value="Formosa">Formosa</mat-option>
+                <mat-option value="Jujuy">Jujuy</mat-option>
+                <mat-option value="La Pampa">La Pampa</mat-option>
+                <mat-option value="La Rioja">La Rioja</mat-option>
+                <mat-option value="Mendoza">Mendoza</mat-option>
+                <mat-option value="Misiones">Misiones</mat-option>
+                <mat-option value="Neuquén">Neuquén</mat-option>
+                <mat-option value="Río Negro">Río Negro</mat-option>
+                <mat-option value="Salta">Salta</mat-option>
+                <mat-option value="San Juan">San Juan</mat-option>
+                <mat-option value="San Luis">San Luis</mat-option>
+                <mat-option value="Santa Cruz">Santa Cruz</mat-option>
+                <mat-option value="Santa Fe">Santa Fe</mat-option>
+                <mat-option value="Santiago del Estero">Santiago del Estero</mat-option>
+                <mat-option value="Tierra del Fuego">Tierra del Fuego</mat-option>
+                <mat-option value="Tucumán">Tucumán</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="button-container">
+                <button mat-raised-button color="primary" >Registrarse</button>
+              </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+      

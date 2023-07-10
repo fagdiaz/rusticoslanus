@@ -1,0 +1,17 @@
+<p>product works!</p>
+
+<mat-card>
+    <mat-card-content> <h5 class="card-title">{{this.myProduct.nombre|uppercase}}</h5>
+      <p class="card-text">{{this.myProduct.precio|currency}}</p>
+      <p class="card-text">{{this.myProduct.tipoPrenda}}{{this.myProduct.tipoPrenda|prenda}}</p>
+      <p class="card-text">{{this.myProduct.marca}}</p>
+      <p [appResaltar]="this.myProduct.stock"       class="card-text">{{this.myProduct.stock}}</p>
+      <input type="text" [(ngModel)] ="this.myProduct.stock" >
+    </mat-card-content>
+  </mat-card>
+  
+     
+      <!-- <input type="button" class="btn btn-danger" value="Eliminar" (click)="informarEliminar()"> -->
+
+
+  
