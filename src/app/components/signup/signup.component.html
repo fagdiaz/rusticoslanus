@@ -6,7 +6,7 @@
     <form [formGroup]="signupForm" (submit)="signup()" ngNoForm>
       <mat-form-field class="example-full-width">
         <mat-label>Email</mat-label>
-        <input formControlName="email" type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+        <input formControlName="email" type="email" matInput [errorStateMatcher]="matcher"
           placeholder="Ex. pat@example.com">
         <mat-hint>Ingrese su email</mat-hint>
         <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">

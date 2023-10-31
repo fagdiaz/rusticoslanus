@@ -1,1 +1,17 @@
 <p>users works!</p>
+<div class="row">
+    <div class="col-12">
+        <h1>Lista de usuarios</h1>
+    </div>
+    
+    <div class="dsc-card" *ngFor="let user of users;">
+        <div class="dsc-card__img">
+            <img src="" alt="">
+        </div>
+        <div class="dsc-card__info">
+            <h2>{{user.email}}</h2>
+            <h4>{{user.pass}}</h4>
+            
+        </div>
+    </div>
+</div>

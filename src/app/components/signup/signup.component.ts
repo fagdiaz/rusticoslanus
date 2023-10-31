@@ -3,6 +3,7 @@ import { FormControl, Validators, FormGroupDirective, NgForm, FormGroup, FormBui
 import { ErrorStateMatcher } from '@angular/material/core';
 import { distinct } from 'rxjs';
 import { User } from 'src/app/entity/user';
+import { SignupService } from 'src/app/services/signup.service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -18,6 +19,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class SignupComponent {
   public user = new User();
+  
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
 
   matcher = new MyErrorStateMatcher();
@@ -25,10 +27,9 @@ export class SignupComponent {
   hide = true;
 
  
-
   public signupForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private signUpService: SignupService) {
     this.signupForm = this.formBuilder.group({
       email: ['', [Validators.email, Validators.required]],
       pass: ['', [Validators.required, Validators.minLength(8)]],
@@ -43,10 +44,27 @@ export class SignupComponent {
   get passwordInput() { return this.signupForm.get('pass'); }
 
   public signup() {
-    var users: User[] = [];
+
+    if (this.signupForm.status === "VALID"){
+     
+      const usuario = {
+        email: this.signupForm.get("email")?.value,
+        pass: this.signupForm.get("pass")?.value,
+        dni: this.signupForm.get("dni")?.value,
+        provincia: this.signupForm.get("province")?.value,
+        fnac: this.signupForm.get("date")?.value
+      }
+
+      console.log("Usuario a enviar", usuario)
+      this.signUpService.signup(usuario)
+    }
+    /*var users: User[] = [];
     users = JSON.parse(localStorage.getItem("user") ?? "[]");
     users.push(this.user);
-    localStorage.setItem("user", JSON.stringify(users));
+    localStorage.setItem("user", JSON.stringify(users));*/
+
+   
+
   }
   
 }
