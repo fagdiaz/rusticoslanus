@@ -42,6 +42,11 @@ export class SignupComponent {
 
   get emailInput() { return this.signupForm.get('email'); }
   get passwordInput() { return this.signupForm.get('pass'); }
+  
+  limpiarFormulario(form: any) {
+    // Limpia los campos del formulario
+    form.reset()
+  }
 
   public signup() {
 
@@ -56,7 +61,11 @@ export class SignupComponent {
       }
 
       console.log("Usuario a enviar", usuario)
-      this.signUpService.signup(usuario)
+      this.signUpService.signup(usuario).subscribe((data:any) => {
+        if (data.res == "ok"){
+          this.limpiarFormulario(this.signupForm);
+        }
+      })
     }
     /*var users: User[] = [];
     users = JSON.parse(localStorage.getItem("user") ?? "[]");

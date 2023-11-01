@@ -16,7 +16,7 @@ export class AddproductComponent {
 
   limpiarFormulario(form: any) {
     // Limpia los campos del formulario
-    form.resetForm();
+    form.reset()
   }
 
 }

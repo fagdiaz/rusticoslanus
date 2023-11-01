@@ -11,9 +11,6 @@ export class SignupService {
 
   signup(user:any){
     console.log("LLEGO AL SERVICIO", user)
-    this.http.post("http://127.0.0.1:3000/usuarios", {user}).subscribe(data => {
-      console.log("data retornada", data)
-      return data;
-    })
+    return this.http.post("http://127.0.0.1:3000/signup", {user})
   }
 }
