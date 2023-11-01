@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ProductsService } from 'src/app/services/products.service';  // Reemplaza 'ruta-del-servicio' con la ruta correcta a tu servicio
 
 @Component({
   selector: 'app-addproduct',
@@ -6,17 +7,34 @@ import { Component } from '@angular/core';
   styleUrls: ['./addproduct.component.css']
 })
 export class AddproductComponent {
-  agregarProducto(form: any) {
-    // Aquí puedes enviar los datos del formulario para procesarlos, por ejemplo, guardarlos en una base de datos.
-    console.log('Producto añadido:', form.value);
+  constructor(private productService: ProductsService) {}
 
-    // Limpia el formulario después de agregar el producto
-    this.limpiarFormulario(form);
+  addProduct(form: any) {
+  
+    const productData = {
+      nombre: form.value.nombre,
+      descripcion: form.value.descripcion,
+      precio: form.value.precio
+    };
+
+   
+    this.productService.addProduct(productData).subscribe(
+      (response) => {
+   
+        console.log('Respuesta del servidor:', response);
+
+     
+        this.limpiarFormulario(form);
+      },
+      (error) => {
+     
+        console.error('Error al enviar datos al servidor:', error);
+      }
+    );
   }
 
   limpiarFormulario(form: any) {
-    // Limpia los campos del formulario
-    form.reset()
+   
+    form.reset();
   }
-
 }

@@ -45,5 +45,10 @@ export class ProductsService {
     return this.http.get('http://127.0.0.1:3000/productos');
   }
 
+  addProduct(product:any){
+    console.log("LLEGO AL SERVICIO", product)
+    return this.http.post("http://127.0.0.1:3000/productos", {product})
+  }
+
 
 }

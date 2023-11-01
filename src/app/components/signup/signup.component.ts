@@ -4,7 +4,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { distinct } from 'rxjs';
 import { User } from 'src/app/entity/user';
 import { SignupService } from 'src/app/services/signup.service';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
