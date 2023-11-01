@@ -25,6 +25,7 @@ import { AccountComponent } from './components/account/account.component';
 import { PrendaPipe } from './pipes/prenda.pipe';
 import { FiltroProductPipe } from './pipes/filtro-product.pipe';
 import { ResaltarDirective } from './resaltar.directive';
+import { AddproductComponent } from './components/products/addproduct/addproduct.component';
 
 export function tokenGetter() {
   const token = localStorage.getItem('UsuarioLogueado');
@@ -49,6 +50,7 @@ export function tokenGetter() {
     PrendaPipe,
     FiltroProductPipe,
     ResaltarDirective,
+    AddproductComponent,
     
    
    

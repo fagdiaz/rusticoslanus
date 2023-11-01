@@ -9,6 +9,7 @@ import { UsersComponent } from './components/users/users.component';
 import { AboutComponent } from './components/about/about.component';
 import { AccountComponent } from './components/account/account.component';
 import { TokenGuard } from './guard/token.guard';
+import { AddproductComponent } from './components/products/addproduct/addproduct.component';
 
 const routes: Routes = [  
   {path:'home',component:HomeComponent},  
@@ -21,6 +22,7 @@ const routes: Routes = [
   {path:'products', component:ProductsComponent},
   {path:'about', component:AboutComponent},
   {path:'account', component:AccountComponent},
+  {path:'addproduct', component:AddproductComponent},
   {path:'**',component:ErrorComponent} 
 
 ];

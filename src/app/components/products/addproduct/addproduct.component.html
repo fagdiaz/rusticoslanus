@@ -1,0 +1,24 @@
+<p>addproduct works!</p>
+<div class="card-container">
+    <mat-card>
+        <h2>Añadir Producto</h2>
+        <form #productForm="ngForm">
+            <mat-form-field class="full-width">
+                <input matInput placeholder="Nombre" name="nombre" ngModel required>
+            </mat-form-field>
+            <mat-form-field class="full-width">
+                <textarea matInput placeholder="Descripción" name="descripcion" ngModel required></textarea>
+            </mat-form-field>
+            <mat-form-field class="full-width">
+                <input matInput type="number" placeholder="Precio" name="precio" ngModel required>
+            </mat-form-field>
+
+            <div class="button-container"> 
+                <button mat-raised-button color="warn" (click)="limpiarFormulario(productForm)" class="clear-button">Limpiar</button>
+                <button mat-raised-button color="primary" (click)="agregarProducto(productForm)">Añadir</button>
+               
+            </div>
+
+        </form>
+    </mat-card>
+</div>

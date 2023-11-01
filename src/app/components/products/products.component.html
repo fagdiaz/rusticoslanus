@@ -1,5 +1,6 @@
 <p>products works!</p>
-<div class="row">
+
+<!--  <div class="row">
     <div class="col-sm col-xs-12">
         <div class="row">
             <input type="text" [(ngModel)]="busqueda">
@@ -11,3 +12,54 @@
         </div>                
     </div>
 </div>
+-->
+
+<mat-card>
+    <a mat-button color="primary" class="add-button" routerLink="/addproduct">Añadir producto nuevo</a>
+
+
+    <div class="product-grid">
+        <mat-card *ngFor="let product of Products" class="product-card">
+            <div class="product-content">
+
+                <div class="product-info">
+                    <!-- Título -->
+                    <table>
+                        <tr>
+                            <!-- Columna 1: Nombre -->
+                            <td>
+                                <h2>{{ product.nombre }}</h2>
+                            </td>
+                            <!-- Columna 2: Botón "Edit" -->
+                            <td>
+                                <div class="edit-button">
+                                    <button mat-icon-button>
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                            <!-- Columna 3: Botón "Delete" -->
+                            <td>
+                                <div class="delete-button">
+                                    <button mat-icon-button>
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Descripción y Precio -->
+                    <p class="description">Descripción: {{ product.descripcion }}</p>
+                    <p>Precio: ${{ product.precio }}</p>
+                </div>
+
+                <!-- Botón "Añadir al carrito" en el margen inferior -->
+                <div class="add-to-cart-button">
+                    <button mat-button color="primary">Añadir al carrito</button>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+
+</mat-card>

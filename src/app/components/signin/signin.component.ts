@@ -33,11 +33,11 @@ export class SigninComponent {
       }
     );
   }
-
+/*
   delete() {
     this.deleteVar.deleteUser();
   }
-
+*/
   constructor(
     public route: Router,
     public deleteVar: ProductsService,

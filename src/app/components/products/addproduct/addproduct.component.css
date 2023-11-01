@@ -1,0 +1,30 @@
+:host {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* Estilo para centrar los campos del formulario */
+.full-width {
+    width: 100%;
+  }
+  
+
+  .card-container {
+    max-width: 400px; /* Puedes ajustar este valor según tus preferencias */
+    margin: 0 auto; /* Esto centrará la tarjeta en el centro de la página */
+    padding: 20px; /* Añade relleno alrededor de la tarjeta para separarla del borde de la página */
+  }
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Centra verticalmente los botones */
+    margin-top: 20px;
+  }
+  
+
+  .clear-button {
+    margin-left: auto; 
+  }

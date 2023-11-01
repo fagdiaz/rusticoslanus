@@ -16,3 +16,27 @@
   .example-full-width {
     width: 100%;
   }
+  .product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .product-card {
+    width: 300px;
+    margin: 10px;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr; /* Divide en tres filas de igual altura */
+    grid-template-columns: 1fr; /* Una sola columna */
+  }
+  
+  .product-content {
+    grid-row: 1 / 4; /* El contenido ocupa todas las filas */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .description {
+    flex-grow: 1; /* Esto permite que la descripción ocupe todo el espacio vertical disponible */
+  }
