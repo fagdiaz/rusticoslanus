@@ -1,4 +1,3 @@
-
 <p>cart works!</p>
 
 <div class="cart-container">
@@ -23,10 +22,11 @@
     </mat-card>
     <mat-card class="total-card">
         <mat-card-content>
-            <p>Total: ${{ total }}</p>
+            <h2>Total: ${{ total }}</h2>
+            <button mat-raised-button color="primary" routerLink="/products">Añadir más productos</button>
+            <button mat-raised-button color="accent" routerLink="/checkout">Finalizar compra</button>
         </mat-card-content>
     </mat-card>
-    <button mat-raised-button color="primary" routerLink="/products">Añadir más productos</button>
-    <button mat-raised-button color="accent" routerLink="/checkout">Finalizar compra</button>
+
 
 </div>
