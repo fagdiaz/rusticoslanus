@@ -10,10 +10,11 @@ import { AboutComponent } from './components/about/about.component';
 import { AccountComponent } from './components/account/account.component';
 import { TokenGuard } from './guard/token.guard';
 import { AddproductComponent } from './components/products/addproduct/addproduct.component';
+import { AuthGuard } from './guard/auth.guard';
 
 const routes: Routes = [  
   {path:'home',component:HomeComponent},  
-  {path:'signup',component:SignupComponent, canDeactivate:[TokenGuard], children:[{path:'hola',component:HomeComponent}]}, 
+  {path:'signup',component:SignupComponent, children:[{path:'hola',component:HomeComponent}]}, 
   {path:'' ,component:HomeComponent}, 
   {path:'signin' ,component:SigninComponent}, 
   {path:'users' ,component:UsersComponent}, 
@@ -22,13 +23,14 @@ const routes: Routes = [
   {path:'products', component:ProductsComponent},
   {path:'about', component:AboutComponent},
   {path:'account', component:AccountComponent},
-  {path:'addproduct', component:AddproductComponent},
+  {path:'addproduct', component:AddproductComponent, canActivate: [AuthGuard]},
   {path:'**',component:ErrorComponent} 
 
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers:[AuthGuard]
 })
 export class AppRoutingModule { }
