@@ -27,6 +27,9 @@ import { FiltroProductPipe } from './pipes/filtro-product.pipe';
 import { ResaltarDirective } from './resaltar.directive';
 import { AddproductComponent } from './components/products/addproduct/addproduct.component';
 import { CartComponent } from './components/cart/cart.component';
+import { OrderComponent } from './components/order/order.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
+import {FormsModule,ReactiveFormsModule,} from '@angular/forms';
 
 export function tokenGetter() {
   const token = localStorage.getItem('UsuarioLogueado');
@@ -53,7 +56,9 @@ export function tokenGetter() {
     ResaltarDirective,
     AddproductComponent,
     CartComponent,
-    
+    OrderComponent,
+    CheckoutComponent
+        
    
    
   ],
@@ -61,14 +66,15 @@ export function tokenGetter() {
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule, HttpClientModule,
+    MaterialModule, HttpClientModule, ReactiveFormsModule,FormsModule,
     
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
         allowedDomains: ["localhost:4200"],
         disallowedRoutes: [],
-      }})
+      },
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

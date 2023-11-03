@@ -12,6 +12,9 @@ import { TokenGuard } from './guard/token.guard';
 import { AddproductComponent } from './components/products/addproduct/addproduct.component';
 import { AuthGuard } from './guard/auth.guard';
 import { CartComponent } from './components/cart/cart.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
+import { OrderComponent } from './components/order/order.component';
+
 
 const routes: Routes = [  
   {path:'home',component:HomeComponent},  
@@ -26,6 +29,8 @@ const routes: Routes = [
   {path:'account', component:AccountComponent},
   {path:'addproduct', component:AddproductComponent, canActivate: [AuthGuard]},
   {path:'cart',component:CartComponent},
+  {path:'checkout',component:CheckoutComponent},
+  {path:'order',component:OrderComponent},
   {path:'**',component:ErrorComponent}
   
 

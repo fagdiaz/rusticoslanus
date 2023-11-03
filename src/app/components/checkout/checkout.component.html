@@ -1,0 +1,49 @@
+<p>checkout works!</p>
+<div class="checkout-container">
+    <mat-card>
+        <mat-card-title>Crear y abonar pedido</mat-card-title><br>
+        <mat-card-content>
+            <form (ngSubmit)="onSubmit()" #checkoutForm="ngForm">
+                <!-- Datos de Envío -->
+                <h3>Datos de Envío</h3>
+                <mat-form-field class="full-width">
+                    <input matInput placeholder="Nombre" name="nombre" [(ngModel)]="formData.nombre" required>
+                </mat-form-field>
+                <mat-form-field class="full-width">
+                    <input matInput placeholder="Dirección" name="direccion" [(ngModel)]="formData.direccion" required>
+                </mat-form-field>
+                <mat-form-field class="full-width">
+                    <input matInput placeholder="Teléfono" name="telefono" [(ngModel)]="formData.telefono" required>
+                </mat-form-field>
+
+                <!-- Datos de Pago -->
+                <h3>Datos de Pago</h3>
+                <mat-radio-group [(ngModel)]="selectedPaymentMethod">
+                    <mat-radio-button value="tarjeta">Tarjeta de Crédito/Débito</mat-radio-button>
+                </mat-radio-group>
+
+                <!-- Campos de Tarjeta de Crédito -->
+                <div *ngIf="selectedPaymentMethod === 'tarjeta'">
+                    <mat-form-field class="full-width">
+                        <input matInput placeholder="Número de Tarjeta" name="numeroTarjeta" [(ngModel)]="formData.numeroTarjeta" required>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                        <input matInput placeholder="Fecha de Vencimiento" name="vencimiento" [(ngModel)]="formData.vencimiento" required>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                        <input matInput placeholder="Código de Seguridad" name="codigoSeguridad" [(ngModel)]="formData.codigoSeguridad" required>
+                    </mat-form-field>
+                </div>
+
+                <!-- Botones Limpiar y Pagar -->
+                <div class="button-container">
+                    <button mat-raised-button color="warn" (click)="clearForm()">Limpiar</button>
+                    <button mat-raised-button color="primary" type="submit">Pagar</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+
+  
