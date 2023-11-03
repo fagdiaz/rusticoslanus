@@ -11,6 +11,7 @@ import { AccountComponent } from './components/account/account.component';
 import { TokenGuard } from './guard/token.guard';
 import { AddproductComponent } from './components/products/addproduct/addproduct.component';
 import { AuthGuard } from './guard/auth.guard';
+import { CartComponent } from './components/cart/cart.component';
 
 const routes: Routes = [  
   {path:'home',component:HomeComponent},  
@@ -24,7 +25,9 @@ const routes: Routes = [
   {path:'about', component:AboutComponent},
   {path:'account', component:AccountComponent},
   {path:'addproduct', component:AddproductComponent, canActivate: [AuthGuard]},
-  {path:'**',component:ErrorComponent} 
+  {path:'cart',component:CartComponent},
+  {path:'**',component:ErrorComponent}
+  
 
 ];
 

@@ -92,4 +92,10 @@ export class ProductsComponent implements OnInit {
       localStorage.setItem("carrito", JSON.stringify(this.carrito));
     }
   }
+
+  getCartItemQuantity(productId: any): number {
+    // Obtener la cantidad de un producto en el carrito
+    const itemInCart = this.carrito.find(item => item.idProducto === productId);
+    return itemInCart ? itemInCart.cantProd : 0;
+  }
 }

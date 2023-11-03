@@ -58,9 +58,10 @@
                 <!-- Botón "Añadir al carrito" en el margen inferior -->
                 <div class="add-to-cart-button">
                     <button mat-button color="primary" (click)="addProduct(product.id, product.nombre, product.descripcion, product.precio)">+</button>
-                    <input type="number" value="" name="cantidad" />
+                    <input type="number" [value]="getCartItemQuantity(product.id)" name="cantidad" />
                     <button mat-button color="primary" (click)="removeProduct(product.id)">-</button>
-                </div>
+                  </div>
+                  
             </div>
         </mat-card>
     </div>
