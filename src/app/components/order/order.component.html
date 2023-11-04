@@ -1,1 +1,19 @@
 <p>order works!</p>
+
+<mat-card class="custom-card">
+    <mat-horizontal-stepper [linear]="true">
+        <mat-step label="state 1">
+            <ng-template matStepLabel>Pedido Creado</ng-template>
+        </mat-step>
+        <mat-step label="state 2">
+            <ng-template matStepLabel>En preparación</ng-template>
+        </mat-step>
+        <mat-step label="state 3">
+            <ng-template matStepLabel>En proceso de entrega</ng-template>
+        </mat-step>
+        <mat-step label="state 4">
+            <ng-template matStepLabel>Entregado</ng-template>
+        </mat-step>
+    </mat-horizontal-stepper>
+    <a mat-button color="accent" href="https://wa.me/+5491122544073" target="_blank">Ayuda</a>
+</mat-card>
