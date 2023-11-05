@@ -74,7 +74,7 @@ export class SigninComponent {
 
   public signin = async () => {
     const auth = getAuth();
-    const resSignIn = await signInWithEmailAndPassword(auth, "seba", "123");
+    const resSignIn = await signInWithEmailAndPassword(auth, "admin@gmail.com", "admin123");
     console.log("signIN", resSignIn);
     return resSignIn
   }

@@ -13,4 +13,5 @@ export class SignupService {
     console.log("LLEGO AL SERVICIO", user)
     return this.http.post("http://127.0.0.1:3000/signup", {user})
   }
+  
 }

@@ -6,8 +6,7 @@
     <form [formGroup]="signupForm" (submit)="signup()" ngNoForm>
       <mat-form-field class="example-full-width">
         <mat-label>Email</mat-label>
-        <input formControlName="email" type="email" matInput [errorStateMatcher]="matcher"
-          placeholder="Ex. pat@example.com">
+        <input formControlName="email" type="email" matInput [errorStateMatcher]="matcher" placeholder="Ex. pat@example.com">
         <mat-hint>Ingrese su email</mat-hint>
         <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
           Ingrese un email válido
@@ -18,8 +17,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input formControlName="pass" matInput placeholder="Contraseña" [type]="hide ? 'password' : 'text'"
-          required>
+        <input formControlName="pass" matInput placeholder="Contraseña" [type]="hide ? 'password' : 'text'" required>
         <mat-icon matSuffix (click)="hide = !hide">{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
         <mat-hint *ngIf="!passwordInput?.value">
           Escriba su contraseña
@@ -27,8 +25,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input formControlName="pass2" matInput placeholder="Confirmar Contraseña" [type]="hide ? 'password' : 'text'"
-          required>
+        <input formControlName="pass2" matInput placeholder="Confirmar Contraseña" [type]="hide ? 'password' : 'text'" required>
         <mat-icon matSuffix (click)="hide = !hide">{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
         <mat-hint *ngIf="!signupForm.get('pass2')?.value">
           Confirme su contraseña
@@ -75,14 +72,13 @@
 
       <mat-form-field>
         <mat-label>Fecha de Nacimiento</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="date">
-        <mat-hint>MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
+        <input matInput type="date" formControlName="date">
       </mat-form-field>
+      
+      
 
       <div class="button-container" *ngIf="!signupForm.hasError('passwordMismatch')">
-        <button mat-raised-button color="primary" >Registrarse</button>
+        <button mat-raised-button color="primary">Registrarse</button>
       </div>
     </form>
   </mat-card-content>

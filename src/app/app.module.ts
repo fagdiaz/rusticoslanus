@@ -1,9 +1,6 @@
 import { NgModule } from '@angular/core';
-
 import { BrowserModule } from '@angular/platform-browser';
-
 import { MaterialModule } from './material.module';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -29,7 +26,8 @@ import { AddproductComponent } from './components/products/addproduct/addproduct
 import { CartComponent } from './components/cart/cart.component';
 import { OrderComponent } from './components/order/order.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
-import {FormsModule,ReactiveFormsModule,} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
+import { DatePipe } from '@angular/common'; 
 
 export function tokenGetter() {
   const token = localStorage.getItem('UsuarioLogueado');
@@ -58,16 +56,15 @@ export function tokenGetter() {
     CartComponent,
     OrderComponent,
     CheckoutComponent
-        
-   
-   
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule, HttpClientModule, ReactiveFormsModule,FormsModule,
-    
+    MaterialModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -76,7 +73,7 @@ export function tokenGetter() {
       },
     })
   ],
-  providers: [],
+  providers: [DatePipe], // Agrega DatePipe en los proveedores
   bootstrap: [AppComponent]
 })
 export class AppModule { }
