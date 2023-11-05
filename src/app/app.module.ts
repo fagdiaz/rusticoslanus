@@ -27,7 +27,8 @@ import { CartComponent } from './components/cart/cart.component';
 import { OrderComponent } from './components/order/order.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
-import { DatePipe } from '@angular/common'; 
+import { DatePipe } from '@angular/common';
+
 
 export function tokenGetter() {
   const token = localStorage.getItem('UsuarioLogueado');
@@ -55,7 +56,8 @@ export function tokenGetter() {
     AddproductComponent,
     CartComponent,
     OrderComponent,
-    CheckoutComponent
+    CheckoutComponent,
+
   ],
   imports: [
     BrowserModule,

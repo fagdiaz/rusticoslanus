@@ -5,7 +5,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { User } from 'src/app/entity/user';
 import { TokenGuard } from 'src/app/guard/token.guard';
 import { ProductsService } from 'src/app/services/products.service';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { initializeApp } from 'firebase/app';
 
 // TODO: Replace the following with your app's Firebase project configuration
@@ -35,9 +35,9 @@ const app = initializeApp(firebaseConfig);
 })
 
 export class SigninComponent {
-  
 
-  
+
+
   public user: User = new User();
   public signinVar = false;
 
@@ -58,26 +58,29 @@ export class SigninComponent {
       }
     );
   }*/
-/*
-  delete() {
-    this.deleteVar.deleteUser();
-  }
-*/
+  /*
+    delete() {
+      this.deleteVar.deleteUser();
+    }
+  */
   constructor(
     public route: Router,
     public deleteVar: ProductsService,
     public token: TokenGuard,
     public http: HttpClient,
     public jwt: JwtHelperService
-  ) {}
+  ) { }
 
 
-  public signin = async () => {
-    const auth = getAuth();
-    const resSignIn = await signInWithEmailAndPassword(auth, "admin@gmail.com", "admin123");
-    console.log("signIN", resSignIn);
-    return resSignIn
+  public async signin() {
+    try {
+      const auth = getAuth();
+      const resSignIn = await signInWithEmailAndPassword(auth, this.user.email, this.user.pass);
+      console.log("Sesión iniciada:", resSignIn.user);
+      this.route.navigateByUrl('home'); // Redirige a la página principal después del inicio de sesión.
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+    }
   }
-
 
 }

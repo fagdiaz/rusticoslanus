@@ -32,7 +32,8 @@
 
         <button routerLink="account" mat-menu-item>Cuenta</button>
         <button mat-menu-item>Configuración</button>
-        <button mat-menu-item>Cerrar sesión</button>
+        <button mat-menu-item (click)="logout()">Cerrar Sesión</button>
+
     </mat-menu>
 
     <button mat-icon-button title="Carrito de Compra" style="color: white;" [routerLink]="['/cart']">
