@@ -13,4 +13,11 @@ export class UsersService {
   getUsers(){
     return this.http.get('http://127.0.0.1:3000/usuarios');
   }
+  getUser(uid:any){
+    console.log('llamo a api');
+    return this.http.get('http://127.0.0.1:3000/obtenerUsuario');
+
+  }
+
+
 }

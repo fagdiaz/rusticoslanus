@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { CheckoutService } from '../../services/checkout.service';
+import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-checkout',
@@ -6,18 +8,39 @@ import { Component } from '@angular/core';
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent {
-  selectedPaymentMethod: string = 'tarjeta'; // Valor predeterminado
-  formData: any = {}; // Objeto para almacenar los datos del formulario
+  selectedPaymentMethod: string = 'tarjeta';
+  checkoutForm: FormGroup;
 
-  constructor() { }
+  constructor(private formBuilder: FormBuilder, private checkoutService: CheckoutService) {
+    this.checkoutForm = this.formBuilder.group({
+      nombre: ['', Validators.required],
+      direccion: ['', Validators.required],
+      telefono: ['', Validators.required],
+      pago: [''],
+      numeroTarjeta: ['', Validators.required],
+      vencimiento: ['', Validators.required],
+      codigoSeguridad: ['', Validators.required]
+    });
+  }
 
   onSubmit(): void {
-    // Aquí puedes manejar los datos del formulario según el método de pago seleccionado.
-    console.log('Datos del formulario:', this.formData);
+    if (this.checkoutForm.invalid) {
+    
+      return;
+    }
+
+    const formData = this.checkoutForm.value;
+
+
+    this.checkoutService.addOrder(formData).subscribe(response => {
+      console.log('Datos del formulario guardados con éxito:', response);
+    }, error => {
+      console.error('Error al guardar los datos del formulario:', error);
+    });
   }
 
   clearForm(): void {
-    // Limpiar los datos del formulario
-    this.formData = {};
+    // Limpiar el formulario
+    this.checkoutForm.reset();
   }
 }

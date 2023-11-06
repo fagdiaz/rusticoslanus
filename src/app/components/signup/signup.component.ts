@@ -70,9 +70,10 @@ export class SignupComponent {
       const auth = getAuth();
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          console.log("Usuario creado en Firebase:", userCredential.user);
+          console.log("Usuario creado en Firebase:", userCredential.user.uid);
+          
 
-          this.signUpService.signup(usuario).subscribe((data: any) => {
+          this.signUpService.signup(usuario, userCredential.user.uid).subscribe((data: any) => {
             if (data.res == "ok") {
               Swal.fire({
                 title: 'Éxito!',

@@ -18,7 +18,9 @@ export class ProductsComponent {
 }
 */
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 import { ProductsService } from 'src/app/services/products.service';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-products',
@@ -30,10 +32,25 @@ export class ProductsComponent implements OnInit {
   public Products: any[] = [];
   public carrito: any[] = [];
 
-  constructor(private productsService: ProductsService) {}
+  constructor(private productsService: ProductsService, private authService: AuthService , private userService: UsersService) {
+
+    
+  }
+  ngAfterViewInit() {
+    // viewChild is set after the view has been initialized
+
+    const user = this.authService.getCurrentUser()
+
+    const currentUser = this.userService.getUser(user?.uid);
+    console.log('usuario actual', currentUser);
+    
+    console.log('despues');
+  }
 
   ngOnInit(): void {
-    // Obtén los elementos del carrito del localStorage
+
+    
+    
     const localStorageCarrito = localStorage.getItem("carrito");
 
     if (localStorageCarrito !== null) {
@@ -98,4 +115,7 @@ export class ProductsComponent implements OnInit {
     const itemInCart = this.carrito.find(item => item.idProducto === productId);
     return itemInCart ? itemInCart.cantProd : 0;
   }
+
+ 
+
 }
