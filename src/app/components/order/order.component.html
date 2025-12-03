@@ -1,19 +1,71 @@
-<p>order works!</p>
+﻿<p>order works!</p>
 
 <mat-card class="custom-card">
-    <mat-horizontal-stepper [linear]="true">
-        <mat-step label="state 1">
-            <ng-template matStepLabel>Pedido Creado</ng-template>
-        </mat-step>
-        <mat-step label="state 2">
-            <ng-template matStepLabel>En preparación</ng-template>
-        </mat-step>
-        <mat-step label="state 3">
-            <ng-template matStepLabel>En proceso de entrega</ng-template>
-        </mat-step>
-        <mat-step label="state 4">
-            <ng-template matStepLabel>Entregado</ng-template>
-        </mat-step>
-    </mat-horizontal-stepper>
-    <a mat-button color="accent" href="https://wa.me/+5491122544073" target="_blank">Ayuda</a>
+
+  <!-- 🔍 Barra de búsqueda -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Buscar pedido</mat-label>
+    <input
+      matInput
+      placeholder="Número, estado, nombre o UID"
+      [(ngModel)]="filtro"
+      (input)="aplicarFiltro()"
+    />
+  </mat-form-field>
+
+  <!-- 🧾 Tabla de pedidos -->
+  <table *ngIf="pedidosFiltrados.length">
+    <thead>
+      <tr>
+        <th>Número Pedido</th>
+        <th>Estado</th>
+        <th>Cliente</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let pedido of pedidosFiltrados">
+        <td>{{ pedido.numeroPedido }}</td>
+        <td>{{ pedido.status }}</td>
+        <td>{{ pedido.nombre }}</td>
+        <td>
+          <button mat-button color="primary" (click)="updateStatus(pedido, 'creado')">
+            Creado
+          </button>
+          <button mat-button color="accent" (click)="updateStatus(pedido, 'en preparación')">
+            En preparación
+          </button>
+          <button mat-button color="warn" (click)="updateStatus(pedido, 'en proceso de entrega')">
+            En entrega
+          </button>
+          <button mat-button color="primary" (click)="updateStatus(pedido, 'entregado')">
+            Entregado
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!pedidosFiltrados.length" style="margin: 20px 0;">
+    <p>No se encontraron pedidos que coincidan con tu búsqueda.</p>
+  </div>
+
+  <!-- 🟦 Stepper de estado -->
+  <mat-horizontal-stepper [linear]="true">
+    <mat-step label="state 1">
+      <ng-template matStepLabel>Pedido Creado</ng-template>
+    </mat-step>
+    <mat-step label="state 2">
+      <ng-template matStepLabel>En preparación</ng-template>
+    </mat-step>
+    <mat-step label="state 3">
+      <ng-template matStepLabel>En proceso de entrega</ng-template>
+    </mat-step>
+    <mat-step label="state 4">
+      <ng-template matStepLabel>Entregado</ng-template>
+    </mat-step>
+  </mat-horizontal-stepper>
+
+  <a mat-button color="accent" href="https://wa.me/+5491122544073" target="_blank">Ayuda</a>
+
 </mat-card>

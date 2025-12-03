@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { getAuth, signOut } from "firebase/auth";
-import { Router } from '@angular/router'; // Importa el m√≥dulo Router
+import { signOut } from "firebase/auth";
+import { Router } from '@angular/router';
+import { firebaseAuth } from '../firebase-config';
 
 @Injectable({
   providedIn: 'root'
@@ -10,31 +10,21 @@ export class AuthService {
   constructor(private router: Router) { }
 
   isAuthenticated() {
-    const auth = getAuth();
-    console.log(auth.currentUser);
-    if (auth.currentUser == null) {
-
-      return false;
-    };
-    return true;
+    console.log('AuthService current user:', firebaseAuth.currentUser);
+    return !!firebaseAuth.currentUser;
   }
-  
 
   public async signout() {
     try {
-      const auth = getAuth();
-      await signOut(auth);
-      console.log("Sesi√≥n cerrada");
+      await signOut(firebaseAuth);
+      console.log("SesiÛn cerrada");
       this.router.navigateByUrl('signin');
     } catch (error) {
-      console.error('Error al cerrar sesi√≥n:', error);
+      console.error('Error al cerrar sesiÛn:', error);
     }
   }
-  getCurrentUser(){
 
-
-    return getAuth().currentUser;
+  getCurrentUser() {
+    return firebaseAuth.currentUser;
   }
-
-
 }

@@ -42,6 +42,13 @@
                     <button mat-raised-button color="primary" type="submit">Pagar</button>
                 </div>
             </form>
+            <div *ngIf="pedidoCreado" class="mt-3">
+                <h2>¡Gracias por tu compra!</h2>
+                <p>
+                    Tu número de pedido es <strong>#{{ numeroPedido }}</strong>.
+                </p>
+                <p>Podes usar este número para consultar el estado del pedido.</p>
+            </div>
         </mat-card-content>
     </mat-card>
 </div>

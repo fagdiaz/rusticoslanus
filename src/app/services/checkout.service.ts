@@ -8,8 +8,15 @@ export class CheckoutService {
 
   constructor(private http: HttpClient) { }
 
-  addOrder(checkoutForm: any, carrito:any, uid?: any) {
-    console.log("LLEGO AL SERVICIO", checkoutForm);
-    return this.http.post("http://127.0.0.1:3000/addOrder", { checkoutForm, carrito: JSON.parse(carrito), uid });
+ addOrder(checkoutForm: any, carrito: any, uid?: string) {
+  return this.http.post<{
+    res: string;
+    id: string;
+    numeroPedido: number; // 👈 agregamos esto
+  }>("http://127.0.0.1:3000/addOrder", {
+    checkoutForm,
+    carrito,
+    uid,
+  });
   }
-}
+} 

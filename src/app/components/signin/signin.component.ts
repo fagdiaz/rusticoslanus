@@ -1,68 +1,24 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core'
+;import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { User } from 'src/app/entity/user';
 import { TokenGuard } from 'src/app/guard/token.guard';
 import { ProductsService } from 'src/app/services/products.service';
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { initializeApp } from 'firebase/app';
 
-// TODO: Replace the following with your app's Firebase project configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyC9uk6RPuERTLj9HCXUToCOmhIfjkqS3ok",
-
-  authDomain: "rusticoslanus-84470.firebaseapp.com",
-
-  projectId: "rusticoslanus-84470",
-
-  storageBucket: "rusticoslanus-84470.appspot.com",
-
-  messagingSenderId: "261854181198",
-
-  appId: "1:261854181198:web:4a0405bf75420df955901f"
-};
-
-const app = initializeApp(firebaseConfig);
-
-//const db = getFirestore(app);
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { firebaseAuth } from 'src/app/firebase-config';
 
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css']
 })
-
 export class SigninComponent {
-
-
 
   public user: User = new User();
   public signinVar = false;
 
-  /*public signin() {
-    this.http.post<any>('http://localhost:3000/signin', this.user).subscribe(
-      (response) => {
-        const token = response.token;
-        if (token) {
-          localStorage.setItem('token', token);
-          this.token.out = true;
-          this.route.navigateByUrl('Home');
-        } else {
-          console.error('El servidor no ha proporcionado un token válido.');
-        }
-      },
-      (error) => {
-        console.error('Error al realizar la solicitud:', error);
-      }
-    );
-  }*/
-  /*
-    delete() {
-      this.deleteVar.deleteUser();
-    }
-  */
   constructor(
     public route: Router,
     public deleteVar: ProductsService,
@@ -71,16 +27,17 @@ export class SigninComponent {
     public jwt: JwtHelperService
   ) { }
 
-
   public async signin() {
     try {
-      const auth = getAuth();
-      const resSignIn = await signInWithEmailAndPassword(auth, this.user.email, this.user.pass);
-      console.log("Sesión iniciada:", resSignIn.user);
-      this.route.navigateByUrl('home'); // Redirige a la página principal después del inicio de sesión.
+      const resSignIn = await signInWithEmailAndPassword(
+        firebaseAuth,
+        this.user.email,
+        this.user.pass
+      );
+      console.log("Sesi�n iniciada:", resSignIn.user);
+      this.route.navigateByUrl('home');
     } catch (error) {
-      console.error('Error al iniciar sesión:', error);
+      console.error('Error al iniciar sesi�n:', error);
     }
   }
-
 }
