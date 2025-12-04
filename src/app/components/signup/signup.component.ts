@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { FormControl, Validators, FormGroupDirective, NgForm, FormGroup, FormBuilder } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { User } from 'src/app/entity/user';
@@ -6,6 +6,7 @@ import { SignupService } from 'src/app/services/signup.service';
 import Swal from 'sweetalert2';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { parseISO, format } from 'date-fns';
+import { AuthService } from 'src/app/services/auth.service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -30,7 +31,11 @@ export class SignupComponent {
 
   public signupForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private signUpService: SignupService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private signUpService: SignupService,
+    private authService: AuthService
+  ) {
     this.signupForm = this.formBuilder.group({
       email: ['', [Validators.email, Validators.required]],
       pass: ['', [Validators.required, Validators.minLength(8)]],
@@ -45,7 +50,6 @@ export class SignupComponent {
   get passwordInput() { return this.signupForm.get('pass'); }
 
   limpiarFormulario(form: any) {
-    // Limpia los campos del formulario
     form.reset();
   }
 
@@ -55,8 +59,6 @@ export class SignupComponent {
       const password = this.signupForm.get("pass")?.value;
       const fechaNacimiento = this.signupForm.get("date")?.value;
       const fechaNacimientoDate = parseISO(fechaNacimiento);
-
-      // Formatea la fecha en el formato "dd/MM/yyyy"
       const fechaNacimientoFormateada = format(fechaNacimientoDate, 'dd/MM/yyyy');
 
       const usuario = {
@@ -71,13 +73,13 @@ export class SignupComponent {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           console.log("Usuario creado en Firebase:", userCredential.user.uid);
-          
 
           this.signUpService.signup(usuario, userCredential.user.uid).subscribe((data: any) => {
             if (data.res == "ok") {
+              this.authService.forceReloadRole(userCredential.user.uid, true);
               Swal.fire({
-                title: 'Éxito!',
-                text: 'Se registró correctamente',
+                title: 'Exito!',
+                text: 'Se registro correctamente',
                 icon: 'success',
                 confirmButtonText: 'Aceptar'
               })
@@ -85,9 +87,25 @@ export class SignupComponent {
             }
           });
         })
-        .catch((error) => {
-          console.error("Error al crear usuario en Firebase:", error);
-        });
+         .catch((error) => {
+            console.error("Error al crear usuario en Firebase:", error);
+
+            if (error.code === 'auth/email-already-in-use') {
+              Swal.fire({
+                title: 'Correo ya registrado',
+                text: 'Ese correo ya tiene una cuenta. Inicie sesion desde "Ingresar".',
+                icon: 'warning',
+                confirmButtonText: 'Aceptar'
+              });
+            } else {
+              Swal.fire({
+                title: 'Error',
+                text: 'No se pudo crear la cuenta. Intente nuevamente mas tarde.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+            }
+          });
     }
   }
 }

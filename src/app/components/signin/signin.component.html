@@ -1,27 +1,88 @@
-<div>
-  <p>signin works!</p>
+﻿<div class="signin-wrapper">
+  <mat-card class="signin-card">
+    <mat-card-title class="signin-title">Iniciar sesión</mat-card-title>
 
-  <mat-card>
     <mat-card-content>
-      <mat-form-field>
-        <input matInput placeholder="Correo electrónico" type="email" [(ngModel)]="user.email">
-      </mat-form-field>
+      <form (ngSubmit)="signin()" #signinForm="ngForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Correo electrónico</mat-label>
+          <input
+            matInput
+            type="email"
+            required
+            name="email"
+            [(ngModel)]="user.email"
+          />
+        </mat-form-field>
 
-      <mat-form-field>
-        <input matInput placeholder="Contraseña" type="password" [(ngModel)]="user.pass">
-      </mat-form-field>
+        <!-- Campo contraseña con icono de visualizar -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
 
-      <div class="button-container">
-        <button routerLink="/signup" mat-flat-button color="accent">Registrarse</button>
-        <button mat-raised-button color="primary" (click)="signin()">Ingresar</button>
-        <button mat-raised-button color="#C69749" >Quitar</button>        
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            required
+            name="password"
+            [(ngModel)]="user.pass"
+          />
+
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword = !hidePassword"
+          >
+            <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+
+        <div class="button-row">
+          <button
+            mat-stroked-button
+            color="accent"
+            type="button"
+            routerLink="/signup"
+          >
+            Registrarse
+          </button>
+
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+          >
+            Ingresar
+          </button>
+        </div>
+
+        <div class="error-msg" *ngIf="errorMsg">
+          {{ errorMsg }}
+        </div>
+      </form>
+
+      <div class="divider">
+        <span>o</span>
+      </div>
+
+      <div class="google-container">
+        <button
+          mat-stroked-button
+          color="primary"
+          class="google-btn"
+          (click)="loginWithGoogle()"
+        >
+          <span class="google-icon-wrapper">
+            <img
+              class="google-icon"
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt="Google"
+            />
+          </span>
+          <span class="google-text">Continuar con Google</span>
+        </button>
       </div>
     </mat-card-content>
   </mat-card>
-
-  <router-outlet></router-outlet>
-
-  <div *ngIf="signin">
-    Estas logeado
-  </div>
 </div>

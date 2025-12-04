@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -6,24 +6,50 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
-  constructor(public authService: AuthService) {}
+export class HeaderComponent implements OnInit {
+  userName: string | null = null;
+  rolActual: string | null = null;
 
-  //usuarioLogeado: boolean = this.authService.isAuthenticated();
+  constructor(private authService: AuthService) {}
 
-  checkIsauthenticated(){
+  ngOnInit(): void {
+    this.authService.user$.subscribe(user => {
+      if (user) {
+        if (user.displayName) {
+          this.userName = user.displayName;
+        } else if (user.email) {
+          this.userName = user.email.split('@')[0];
+        } else {
+          this.userName = null;
+        }
+      } else {
+        this.userName = null;
+      }
+    });
 
-    return this.authService.isAuthenticated();
-
-
+    this.authService.role$.subscribe(rol => {
+      this.rolActual = rol ? rol.toLowerCase() : null;
+      console.log('ROL EN HEADER:', this.rolActual);
+    });
   }
 
-
-
-
-  logout() {
-    this.authService.signout();
+  get checkIsauthenticated(): boolean {
     return this.authService.isAuthenticated();
-  
+  }
+
+  isCliente(): boolean {
+    return this.rolActual === 'cliente';
+  }
+
+  isOperador(): boolean {
+    return this.rolActual === 'operador';
+  }
+
+  isAdmin(): boolean {
+    return this.rolActual === 'admin';
+  }
+
+  logout(): void {
+    this.authService.signout();
   }
 }
