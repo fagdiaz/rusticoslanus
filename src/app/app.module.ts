@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { MaterialModule } from './material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,8 +27,15 @@ import { AddproductComponent } from './components/products/addproduct/addproduct
 import { CartComponent } from './components/cart/cart.component';
 import { OrderComponent } from './components/order/order.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
-import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
+import { ChatComponent } from './components/chat/chat.component';
+import { ChatFilterPipe } from './pipes/chat-filter.pipe';
+import { MyMessageDirective } from './directives/my-message.directive';
+import { OrdersAdminComponent } from './components/orders-admin/orders-admin.component';
+import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
 
 
 export function tokenGetter() {
@@ -57,16 +65,24 @@ export function tokenGetter() {
     CartComponent,
     OrderComponent,
     CheckoutComponent,
+    ChatComponent,
+    ChatFilterPipe,
+    MyMessageDirective,
+    OrdersAdminComponent,
+    ChatWidgetComponent,
 
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    MatSelectModule,
+    MatOptionModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -74,6 +90,10 @@ export function tokenGetter() {
         disallowedRoutes: [],
       },
     })
+  ],
+  exports: [
+    ChatComponent,
+    ChatWidgetComponent
   ],
   providers: [DatePipe], // Agrega DatePipe en los proveedores
   bootstrap: [AppComponent]

@@ -1,0 +1,73 @@
+<div class="orders-admin-container">
+  <h2>Gestión de pedidos</h2>
+
+  <mat-card class="filters-card">
+    <div class="filters-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Estado</mat-label>
+        <mat-select [(ngModel)]="filtroEstado" (selectionChange)="onFilterChange()">
+          <mat-option value="">Todos</mat-option>
+          <mat-option value="creado">Creado</mat-option>
+          <mat-option value="en preparación">En preparación</mat-option>
+          <mat-option value="en proceso de entrega">En proceso de entrega</mat-option>
+          <mat-option value="entregado">Entregado</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email cliente</mat-label>
+        <input matInput [(ngModel)]="filtroEmail" (keyup.enter)="onFilterChange()">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Número de pedido</mat-label>
+        <input matInput type="number" [(ngModel)]="filtroNumeroPedido" (keyup.enter)="onFilterChange()">
+      </mat-form-field>
+
+      <div class="filter-actions">
+        <button mat-raised-button color="primary" (click)="loadOrders()">
+          Buscar
+        </button>
+        <button mat-stroked-button color="accent" (click)="filtroEstado=''; filtroEmail=''; filtroNumeroPedido=''; onFilterChange();">
+          Limpiar
+        </button>
+      </div>
+    </div>
+  </mat-card>
+
+  <mat-card class="table-card">
+    <div *ngIf="isLoading">Cargando pedidos...</div>
+
+    <div *ngIf="!isLoading && !pedidosFiltrados.length" class="empty-state">
+      No se encontraron pedidos con los filtros aplicados.
+    </div>
+
+    <table class="orders-table" *ngIf="!isLoading && pedidosFiltrados.length">
+      <thead>
+        <tr>
+          <th># Pedido</th>
+          <th>Estado</th>
+          <th>Cliente</th>
+          <th>Email</th>
+          <th>UID</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of pedidosFiltrados">
+          <td>{{ p.numeroPedido || p.id }}</td>
+          <td>{{ p.status }}</td>
+          <td>{{ p.nombre || p.cliente }}</td>
+          <td>{{ p.emailUsuario || p.email }}</td>
+          <td>{{ p.uid }}</td>
+          <td class="actions-cell">
+            <button mat-stroked-button color="primary" (click)="updateStatus(p, 'creado')">Creado</button>
+            <button mat-stroked-button color="accent" (click)="updateStatus(p, 'en preparación')">Preparación</button>
+            <button mat-stroked-button color="accent" (click)="updateStatus(p, 'en proceso de entrega')">Entrega</button>
+            <button mat-raised-button color="primary" (click)="updateStatus(p, 'entregado')">Entregado</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </mat-card>
+</div>

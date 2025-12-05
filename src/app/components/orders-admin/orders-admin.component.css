@@ -1,0 +1,61 @@
+.orders-admin-container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filters-card {
+  padding: 16px;
+}
+
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.table-card {
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+  font-size: 14px;
+}
+
+.orders-table th {
+  font-weight: 600;
+}
+
+.orders-table tr:hover {
+  background-color: #fafafa;
+}
+
+.actions-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 12px 0;
+  color: #666;
+}

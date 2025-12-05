@@ -1,0 +1,14 @@
+<button
+  mat-fab
+  color="primary"
+  class="chat-fab"
+  (click)="toggleChat()"
+  aria-label="Abrir chat"
+>
+  <mat-icon *ngIf="!isOpen">chat</mat-icon>
+  <mat-icon *ngIf="isOpen">close</mat-icon>
+</button>
+
+<div class="chat-widget-container" *ngIf="isOpen">
+  <app-chat></app-chat>
+</div>

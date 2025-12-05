@@ -1,0 +1,21 @@
+.chat-fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.chat-widget-container {
+  position: fixed;
+  right: 30px;
+  bottom: 90px;
+  width: 100%;
+  max-width: 420px;
+  height: 520px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  overflow: hidden;
+  z-index: 1000;
+}

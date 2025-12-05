@@ -11,7 +11,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatStepperModule } from '@angular/material/stepper'; 
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatMenuModule,
     MatIconModule,
     MatGridListModule,
-    MatStepperModule, 
+    MatStepperModule,
+    MatButtonToggleModule,
   ],
   exports: [
     MatButtonModule,
@@ -33,7 +35,8 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatInputModule,
     MatGridListModule,
     MatRadioModule,
-    MatStepperModule
+    MatStepperModule,
+    MatButtonToggleModule
   ],
 })
 export class MaterialModule { }

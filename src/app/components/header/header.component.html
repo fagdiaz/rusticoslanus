@@ -13,7 +13,7 @@
 
     <!-- ✅ Agregado: Pedidos -->
     <a  mat-button  color="white"  class="menu"  routerLink="order"  *ngIf="isCliente()">Mis pedidos</a>
-    <a  mat-button  color="white"  class="menu"  routerLink="order"  *ngIf="isOperador() || isAdmin()">  Pedidos</a>
+    <a  mat-button  color="white"  class="menu"  routerLink="admin/pedidos"  *ngIf="isOperador() || isAdmin()">Pedidos</a>
     <div class="menuspacer" *ngIf="isCliente() || isOperador() || isAdmin()"></div>
 
     <a routerLink="about" mat-button color="white" class="menu">Nosotros</a>

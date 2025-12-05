@@ -62,12 +62,11 @@ export class SignupComponent {
       const fechaNacimientoFormateada = format(fechaNacimientoDate, 'dd/MM/yyyy');
 
       const usuario = {
-        email: email,
-        pass: password,
+        email,
         dni: this.signupForm.get("dni")?.value,
         provincia: this.signupForm.get("province")?.value,
         fnac: fechaNacimientoFormateada,
-      }
+      };
 
       const auth = getAuth();
       createUserWithEmailAndPassword(auth, email, password)
@@ -75,6 +74,7 @@ export class SignupComponent {
           console.log("Usuario creado en Firebase:", userCredential.user.uid);
 
           this.signUpService.signup(usuario, userCredential.user.uid).subscribe((data: any) => {
+            console.log("Respuesta signup backend:", data);
             if (data.res == "ok") {
               this.authService.forceReloadRole(userCredential.user.uid, true);
               Swal.fire({
