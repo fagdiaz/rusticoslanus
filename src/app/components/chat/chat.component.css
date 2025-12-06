@@ -1,14 +1,29 @@
+/* === CONTENEDOR GENERAL === */
+
+.chat-page-container {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  padding-bottom: 72px;
+}
+
+/* === CARD GENERAL DEL CHAT === */
+
 .chat-card {
   width: 100%;
   max-width: 420px;
-  max-height: 520px;
-  padding: 12px;
+
+  /* Altura fija para que el input quede siempre abajo */
+  height: 520px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-  background: #fff;
+  gap: 8px;
+
+  padding: 8px 10px;
   border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background: #fff;
 }
 
 .chat-header {
@@ -20,7 +35,7 @@
 
 .chat-title {
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -29,43 +44,146 @@
   color: #666;
 }
 
-.chat-destino,
-.chat-destino-resumen,
-.chat-filtro {
+/* === CONVERSACIONES === */
+
+.chat-conversaciones {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.chat-filtro-field,
+.chat-conversaciones h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.conv-lista {
+  max-height: 120px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 6px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.conv-item {
+  padding: 2px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.conv-item:hover {
+  background: #e9f2ff;
+}
+
+.conv-main {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conv-email {
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.conv-ultimo {
+  font-size: 11px;
+  color: #555;
+  opacity: 0.8;
+}
+
+.conv-fecha {
+  font-size: 11px;
+  color: #777;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+.conv-vacia {
+  font-size: 12px;
+  color: #777;
+}
+
+/* === CAMPOS SUPERIORES (BUSCAR / CONVERSAR CON) === */
+
+.chat-destino,
+.chat-destino-resumen {
+  display: flex;
+  gap: 6px;
+}
+
 .chat-destino-field,
 .chat-user-filter {
   width: 100%;
 }
 
+/* Campos compactos, pero sin romper nada */
+
+.compact-field {
+  font-size: 13px;
+  margin-bottom: 0;
+}
+
+/* Overrides para Angular Material MDC */
+
+:host ::ng-deep .compact-field .mat-mdc-text-field-wrapper {
+  min-height: 32px;   /* más bajo que el default */
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+:host ::ng-deep .compact-field .mat-mdc-form-field-flex {
+  align-items: center;
+}
+
+:host ::ng-deep .compact-field .mat-mdc-form-field-infix {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+:host ::ng-deep .compact-field .mat-mdc-floating-label {
+  font-size: 12px;
+}
+
+/* === MENSAJES === */
+
 .chat-loading {
   text-align: center;
-  padding: 8px 0;
+  padding: 6px 0;
   font-weight: 500;
 }
 
 .chat-empty {
   text-align: center;
-  padding: 10px;
+  padding: 8px;
   color: #666;
-  font-size: 14px;
+  font-size: 13px;
 }
 
+/* Este bloque ocupa el espacio disponible, así el input queda abajo */
 .mensajes-lista {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  margin: 8px 0;
-  padding: 8px;
-  padding-bottom: 16px;
+  margin: 4px 0 6px;
+  padding: 6px;
   border-radius: 8px;
   background-color: #fafafa;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .mensaje-wrapper {
@@ -78,7 +196,7 @@
 
 .mensaje-mio .msg-texto {
   display: inline-block;
-  padding: 6px 10px;
+  padding: 4px 8px;
   border-radius: 12px;
   background-color: #d1ffd1;
   max-width: 80%;
@@ -91,7 +209,7 @@
 
 .mensaje-otro .msg-texto {
   display: inline-block;
-  padding: 6px 10px;
+  padding: 4px 8px;
   border-radius: 12px;
   background-color: #f1f1f1;
   max-width: 80%;
@@ -100,7 +218,7 @@
 .msg-header {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 10px;
   color: #666;
   margin-bottom: 2px;
 }
@@ -113,20 +231,58 @@
   font-style: italic;
 }
 
+/* === INPUT + BOTÓN ABAJO === */
+
 .chat-input {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid #eee;
 }
 
 .chat-input-field {
   flex: 1;
 }
 
-.chat-page-container {
-  display: flex;
-  justify-content: center;
-  padding: 16px;
-  padding-bottom: 96px;
+/* Botón Enviar más compacto */
+
+:host ::ng-deep .mat-mdc-raised-button.mat-mdc-button-base {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+/* ===== Campos compactos para Angular Material "clásico" ===== */
+
+:host ::ng-deep .compact-field .mat-form-field-wrapper {
+  padding-bottom: 0;
+  margin: 0;
+}
+
+:host ::ng-deep .compact-field .mat-form-field-flex {
+  align-items: center;
+}
+
+:host ::ng-deep .compact-field .mat-form-field-infix {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 0;
+  padding-right: 0;
+  border-top: 0;
+}
+
+/* Input/select más bajitos */
+:host ::ng-deep .compact-field .mat-input-element,
+:host ::ng-deep .compact-field .mat-select-trigger {
+  line-height: 1.2;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 13px;
+}
+
+/* Opcional: sacar espacio de mensajes de ayuda debajo */
+:host ::ng-deep .compact-field .mat-form-field-subscript-wrapper {
+  margin-top: 0;
+  height: 0;
+  overflow: hidden;
 }

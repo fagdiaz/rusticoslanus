@@ -1,4 +1,10 @@
-﻿import { Component } from '@angular/core';
+﻿/**
+ * Registro:
+ * - Fecha de nacimiento se toma del formControl "date" (type="date").
+ * - Se formatea a string 'dd/MM/yyyy' y se envía al backend como propiedad fnac del usuario.
+ * - No se envía la contraseña en el payload al backend.
+ */
+import { Component } from '@angular/core';
 import { FormControl, Validators, FormGroupDirective, NgForm, FormGroup, FormBuilder } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { User } from 'src/app/entity/user';
@@ -48,6 +54,10 @@ export class SignupComponent {
 
   get emailInput() { return this.signupForm.get('email'); }
   get passwordInput() { return this.signupForm.get('pass'); }
+  get edad(): number | null {
+    const fecha = this.signupForm.get('date')?.value;
+    return fecha ? this.calcularEdad(fecha) : null;
+  }
 
   limpiarFormulario(form: any) {
     form.reset();
@@ -107,5 +117,21 @@ export class SignupComponent {
             }
           });
     }
+  }
+
+  private calcularEdad(fechaIso: string): number | null {
+    const nacimiento = new Date(fechaIso);
+    if (Number.isNaN(nacimiento.getTime())) {
+      return null;
+    }
+
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mes = hoy.getMonth() - nacimiento.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--;
+    }
+
+    return edad >= 0 ? edad : null;
   }
 }

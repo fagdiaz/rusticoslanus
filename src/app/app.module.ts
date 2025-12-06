@@ -33,6 +33,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatFilterPipe } from './pipes/chat-filter.pipe';
+import { EdadPipe } from './pipes/edad.pipe';
 import { MyMessageDirective } from './directives/my-message.directive';
 import { OrdersAdminComponent } from './components/orders-admin/orders-admin.component';
 import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
@@ -70,6 +71,7 @@ export function tokenGetter() {
     MyMessageDirective,
     OrdersAdminComponent,
     ChatWidgetComponent,
+    EdadPipe,
 
   ],
   imports: [

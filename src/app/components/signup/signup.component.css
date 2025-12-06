@@ -17,3 +17,8 @@
   .button-container {
     margin-top: 16px;
   }
+
+.edad-info {
+    margin-top: 8px;
+    font-weight: 500;
+}

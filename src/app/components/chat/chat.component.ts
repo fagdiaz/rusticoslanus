@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ChatService, ChatQuery, MensajeChat } from '../../services/chat.service';
+import { ChatService, ConversacionResumen, MensajeChat } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
 import { Usuario, UsuariosService } from '../../services/usuarios.service';
 
@@ -19,6 +19,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   usuarios: Usuario[] = [];
   destinatarioSeleccionado: Usuario | null = null;
+  conversaciones: ConversacionResumen[] = [];
 
   refrescoInterval?: any;
   roleSub?: Subscription;
@@ -43,6 +44,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
 
     this.cargarUsuarios();
+    this.cargarConversaciones();
 
     this.refrescoInterval = setInterval(() => this.refrescarMensajesSinSpinner(), 1000);
   }
@@ -67,58 +69,60 @@ export class ChatComponent implements OnInit, OnDestroy {
       (u.rol?.toLowerCase().includes(term) ?? false)
     );
   }
+  getNombreDesdeEmail(email: string | null | undefined): string {
+    if (!email) return '';
+    const partes = email.split('@');
+    return partes[0] || email;
+  }
+
 
   onSeleccionDestinatario(u: Usuario): void {
+    // Selección manual solo si hay uid válido
     if (!u || !u.uid) return;
     this.destinatarioSeleccionado = u;
+    this.mensajes = []; // limpiar mensajes al cambiar de conversación
     this.cargarMensajes();
   }
 
   cargarMensajes(): void {
+    // No llamar al backend si faltan uids
     if (!this.uidActual || !this.destinatarioSeleccionado?.uid) return;
-
-    const query: ChatQuery = {
-      uidActual: this.uidActual!,
-      uidOtro: this.destinatarioSeleccionado!.uid,
-      limit: 100
-    };
 
     this.isLoading = true;
 
-    this.chatService.getMessages(query).subscribe({
-      next: msgs => {
-        this.mensajes = msgs;
-        this.isLoading = false;
-        this.scrollToBottom();
-      },
-      error: err => {
-        this.isLoading = false;
-      }
-    });
+    this.chatService
+      .getMessages(this.uidActual!, this.destinatarioSeleccionado!.uid, 100)
+      .subscribe({
+        next: (msgs) => {
+          this.mensajes = msgs;
+          this.isLoading = false;
+          this.scrollToBottom();
+        },
+        error: () => {
+          this.isLoading = false;
+        }
+      });
   }
 
   refrescarMensajesSinSpinner(): void {
+    // No refrescar sin uids válidos
     if (!this.uidActual || !this.destinatarioSeleccionado?.uid) return;
 
-    const query: ChatQuery = {
-      uidActual: this.uidActual!,
-      uidOtro: this.destinatarioSeleccionado!.uid,
-      limit: 100
-    };
-
-    this.chatService.getMessages(query).subscribe({
-      next: msgs => {
-        const lastLocalId = this.mensajes[this.mensajes.length - 1]?.id;
-        const lastRemoteId = msgs[msgs.length - 1]?.id;
-        if (msgs.length !== this.mensajes.length || lastLocalId !== lastRemoteId) {
-          this.mensajes = msgs;
-          this.scrollToBottom();
+    this.chatService
+      .getMessages(this.uidActual!, this.destinatarioSeleccionado!.uid, 100)
+      .subscribe({
+        next: (msgs) => {
+          const lastLocalId = this.mensajes[this.mensajes.length - 1]?.id;
+          const lastRemoteId = msgs[msgs.length - 1]?.id;
+          if (msgs.length !== this.mensajes.length || lastLocalId !== lastRemoteId) {
+            this.mensajes = msgs;
+            this.scrollToBottom();
+          }
+        },
+        error: (err) => {
+          console.error('Error refrescar mensajes', err);
         }
-      },
-      error: err => {
-        console.error('Error refrescar mensajes', err);
-      }
-    });
+      });
   }
 
   enviarMensaje(): void {
@@ -127,16 +131,19 @@ export class ChatComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.chatService.sendMessage(texto, {
-      uidDestinatario: this.destinatarioSeleccionado.uid,
-      emailDestinatario: this.destinatarioSeleccionado.email
-    }).subscribe({
-      next: () => {
-        this.mensajeNuevo = '';
-        this.refrescarMensajesSinSpinner();
-      },
-      error: err => console.error('Error al enviar mensaje', err)
-    });
+    this.chatService
+      .sendMessage(texto, {
+        uidDestinatario: this.destinatarioSeleccionado.uid,
+        emailDestinatario: this.destinatarioSeleccionado.email
+      })
+      .subscribe({
+        next: () => {
+          this.mensajeNuevo = '';
+          this.refrescarMensajesSinSpinner();
+          this.cargarConversaciones(); // actualiza lista de conversaciones
+        },
+        error: (err) => console.error('Error al enviar mensaje', err)
+      });
   }
 
   esMio(msg: MensajeChat): boolean {
@@ -161,14 +168,35 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
+  private cargarConversaciones(): void {
+    if (!this.uidActual) {
+      console.warn('cargarConversaciones: no hay uidActual');
+      return;
+    }
+
+    this.chatService.getConversations(this.uidActual, 50).subscribe({
+      next: (convs) => {
+        this.conversaciones = convs || [];
+        console.log('Conversaciones cargadas:', this.conversaciones);
+      },
+      error: (err) => {
+        console.error('Error al obtener conversaciones', err);
+      }
+    });
+  }
+
   private autoSeleccionarDestinatario(): void {
     const rolActual = this.rolActual || this.authService.currentRole;
 
     if (rolActual === 'cliente') {
-      const soporte = this.usuarios.find(u => u.rol === 'operador' || u.rol === 'admin') || null;
+      // Autoselección de operador/admin para cliente
+      const soporte =
+        this.usuarios.find(u => u.rol === 'operador' || u.rol === 'admin') || null;
       const cambio = this.destinatarioSeleccionado?.uid !== soporte?.uid;
       this.destinatarioSeleccionado = soporte;
+
       if (soporte && (cambio || !this.mensajes.length)) {
+        this.mensajes = []; // limpiar al cambiar de conversación
         this.cargarMensajes();
       } else if (!soporte) {
         this.mensajes = [];
@@ -176,7 +204,23 @@ export class ChatComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // operador/admin: no se auto-selecciona destinatario
+    // Lista de destinatarios para operador/admin (excluye al usuario actual en cargarUsuarios)
     this.destinatarioSeleccionado = null;
+    this.mensajes = []; // limpiar si no hay destinatario seleccionado
+  }
+
+  seleccionarConversacion(conv: ConversacionResumen): void {
+    if (!conv?.uidOtro) return;
+
+    // Si el usuario ya está en la lista, usarlo; si no, crear un placeholder mínimo
+    const usuario =
+      this.usuarios.find(u => u.uid === conv.uidOtro) ||
+      ({
+        uid: conv.uidOtro,
+        email: conv.emailOtro,
+        rol: 'cliente'
+      } as Usuario);
+
+    this.onSeleccionDestinatario(usuario);
   }
 }

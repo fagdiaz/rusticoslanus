@@ -74,6 +74,10 @@
         <mat-label>Fecha de Nacimiento</mat-label>
         <input matInput type="date" formControlName="date">
       </mat-form-field>
+
+      <div class="edad-info" *ngIf="signupForm.get('date')?.value">
+        Edad: {{ signupForm.get('date')?.value | edad }} años
+      </div>
       
       
 

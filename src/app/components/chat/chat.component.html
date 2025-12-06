@@ -4,17 +4,57 @@
       <div class="chat-title">Chat privado</div>
       <div class="chat-subtitle" *ngIf="authService.currentRole === 'cliente'">
         <ng-container *ngIf="destinatarioSeleccionado; else sinSoporte">
-          Te atiende: {{ destinatarioSeleccionado.email }} <span *ngIf="destinatarioSeleccionado.rol">({{ destinatarioSeleccionado.rol }})</span>
+          Te atiende:
+          {{ destinatarioSeleccionado.email }}
+          <span *ngIf="destinatarioSeleccionado.rol">
+            ({{ destinatarioSeleccionado.rol }})
+          </span>
         </ng-container>
-        <ng-template #sinSoporte>
-          No hay operador disponible
-        </ng-template>
+        <ng-template #sinSoporte>No hay operador disponible</ng-template>
       </div>
     </div>
 
-    <div class="chat-destino" *ngIf="authService.currentRole === 'operador' || authService.currentRole === 'admin'">
-      <mat-form-field appearance="outline" class="chat-user-filter">
-        <mat-label>Buscar usuario</mat-label>
+    <!-- Lista de conversaciones para operador/admin -->
+    <div
+      class="chat-conversaciones"
+      *ngIf="authService.currentRole === 'operador' || authService.currentRole === 'admin'"
+    >
+      <h4>Conversaciones</h4>
+      <div class="conv-lista">
+        <div
+          class="conv-item"
+          *ngFor="let conv of conversaciones"
+          (click)="seleccionarConversacion(conv)"
+        >
+          <div class="conv-main">
+            <span class="conv-email">
+              {{ getNombreDesdeEmail(conv.emailOtro) }}
+            </span>
+            <span class="conv-ultimo">
+              — {{ conv.ultimoMensaje }}
+            </span>
+          </div>
+          <div class="conv-fecha">
+            {{ conv.timestamp | date: 'd/M' }}
+          </div>
+        </div>
+
+        <div *ngIf="!conversaciones.length" class="conv-vacia">
+          No hay conversaciones
+        </div>
+      </div>
+    </div>
+
+    <!-- Selector de destinatario para operador/admin -->
+    <div
+      class="chat-destino"
+      *ngIf="authService.currentRole === 'operador' || authService.currentRole === 'admin'"
+    >
+      <!-- Buscar usuario: solo placeholder -->
+      <mat-form-field
+        appearance="outline"
+        class="chat-user-filter compact-field"
+      >
         <input
           matInput
           type="text"
@@ -23,50 +63,34 @@
         />
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="chat-destino-field">
-      <mat-label>Conversar con</mat-label>
-      <mat-select
-        [(value)]="destinatarioSeleccionado"
-        (selectionChange)="onSeleccionDestinatario($event.value)"
-      >
-        <mat-option *ngFor="let u of getUsuariosFiltrados()" [value]="u">
-          {{ u.email }} <span *ngIf="u.rol">({{ u.rol }})</span>
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-    <div class="chat-filtro">
-      <mat-form-field appearance="outline" class="chat-filtro-field">
-        <mat-label>Filtrar mensajes</mat-label>
-        <input
-          matInput
-          type="text"
-          placeholder="Buscar por texto o email..."
-          [(ngModel)]="filtroTexto"
-        />
+      <!-- Conversar con -->
+      <mat-form-field appearance="outline" class="chat-destino-field compact-field">
+        <mat-select
+          placeholder="Conversar con"
+          [(value)]="destinatarioSeleccionado"
+          (selectionChange)="onSeleccionDestinatario($event.value)">
+          
+          <mat-option *ngFor="let u of getUsuariosFiltrados()" [value]="u">
+            {{ u.email }}
+            <span *ngIf="u.rol">({{ u.rol }})</span>
+          </mat-option>
+        </mat-select>
       </mat-form-field>
+
     </div>
 
-    <div *ngIf="isLoading" class="chat-loading">
-      Cargando mensajes...
-    </div>
+    <!-- Lista de mensajes -->
+    <div *ngIf="isLoading" class="chat-loading">Cargando mensajes...</div>
 
-    <div
-      #messagesContainer
-      class="mensajes-lista"
-      *ngIf="!isLoading"
-    >
+    <div #messagesContainer class="mensajes-lista" *ngIf="!isLoading">
       <div
         class="mensaje-wrapper"
-        *ngFor="let msg of mensajes | chatFilter:filtroTexto"
+        *ngFor="let msg of mensajes | chatFilter: filtroTexto"
         [appMyMessage]="msg.uidRemitente"
       >
         <div class="msg-header">
           <span class="msg-email">{{ msg.emailRemitente }}</span>
-          <span class="msg-fecha">
-            {{ msg.timestamp | date:'short' }}
-          </span>
+          <span class="msg-fecha">{{ msg.timestamp | date: 'short' }}</span>
         </div>
         <div class="msg-texto">
           {{ msg.texto }}
@@ -78,11 +102,16 @@
       </div>
     </div>
 
+    <!-- Input y botón de envío -->
     <div class="chat-input">
-      <mat-form-field class="chat-input-field" appearance="outline">
-        <mat-label>Escribi tu mensaje</mat-label>
+      <!-- Campo de mensaje: solo placeholder -->
+      <mat-form-field
+        class="chat-input-field compact-field"
+        appearance="outline"
+      >
         <input
           matInput
+          placeholder="Escribí tu mensaje"
           [(ngModel)]="mensajeNuevo"
           (keyup.enter)="enviarMensaje()"
           [disabled]="!destinatarioSeleccionado || !uidActual"
@@ -93,7 +122,12 @@
         mat-raised-button
         color="primary"
         (click)="enviarMensaje()"
-        [disabled]="!mensajeNuevo?.trim() || !destinatarioSeleccionado || !uidActual"
+        [disabled]="
+          !mensajeNuevo ||
+          !mensajeNuevo.trim() ||
+          !destinatarioSeleccionado ||
+          !uidActual
+        "
       >
         Enviar
       </button>

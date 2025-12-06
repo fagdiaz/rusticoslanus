@@ -10,7 +10,9 @@
         </div>
         <div class="dsc-card__info">
             <h2>{{user.email}}</h2>
-            <h4>{{user.pass}}</h4>
+            <div *ngIf="user.fnac">
+                Edad: {{ user.fnac | edad }} años
+            </div>
             
         </div>
     </div>
