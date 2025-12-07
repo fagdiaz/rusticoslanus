@@ -10,9 +10,12 @@
         </div>
         <div class="dsc-card__info">
             <h2>{{user.email}}</h2>
-            <div *ngIf="user.fnac">
-                Edad: {{ user.fnac | edad }} años
-            </div>
+            <ng-container *ngIf="getEdad(user) as edad; else sinEdad">
+                Edad: {{ edad }} años
+            </ng-container>
+            <ng-template #sinEdad>
+                Edad: -
+            </ng-template>
             
         </div>
     </div>

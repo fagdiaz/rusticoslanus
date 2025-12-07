@@ -5,20 +5,15 @@ import { MensajeChat } from '../services/chat.service';
   name: 'chatFilter'
 })
 export class ChatFilterPipe implements PipeTransform {
-  transform(mensajes: MensajeChat[], filtro: string): MensajeChat[] {
-    if (!mensajes) {
-      return [];
-    }
+  transform(mensajes: MensajeChat[] | null | undefined, filtro: string | null | undefined): MensajeChat[] {
+    if (!mensajes || !mensajes.length) return [];
+    if (!filtro || !filtro.trim()) return mensajes;
 
-    if (!filtro) {
-      return mensajes;
-    }
+    const term = filtro.trim().toLowerCase();
 
-    const filtroLower = filtro.toLowerCase();
-
-    return mensajes.filter(msg =>
-      msg.texto.toLowerCase().includes(filtroLower) ||
-      msg.emailRemitente.toLowerCase().includes(filtroLower)
-    );
+    return mensajes.filter(msg => {
+      const texto = (msg.texto || '').toLowerCase();
+      return texto.includes(term);
+    });
   }
 }

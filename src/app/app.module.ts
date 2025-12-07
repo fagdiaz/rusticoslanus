@@ -37,6 +37,7 @@ import { EdadPipe } from './pipes/edad.pipe';
 import { MyMessageDirective } from './directives/my-message.directive';
 import { OrdersAdminComponent } from './components/orders-admin/orders-admin.component';
 import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
+import { ChatFullComponent } from './components/chat-full/chat-full.component';
 
 
 export function tokenGetter() {
@@ -67,6 +68,7 @@ export function tokenGetter() {
     OrderComponent,
     CheckoutComponent,
     ChatComponent,
+    ChatFullComponent,
     ChatFilterPipe,
     MyMessageDirective,
     OrdersAdminComponent,

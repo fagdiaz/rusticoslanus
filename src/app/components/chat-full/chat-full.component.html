@@ -1,0 +1,128 @@
+<div class="chatfull-container">
+  <div class="chatfull-sidebar">
+    <h4 class="sidebar-header">Conversaciones</h4>
+    <div class="sidebar-list">
+      <div
+        class="conv-item"
+        *ngFor="let conv of conversaciones"
+        (click)="seleccionarConversacion(conv)"
+        [class.active]="destinatarioSeleccionado?.uid === conv.uidOtro"
+      >
+        <div class="conv-item-main">
+          <div class="conv-nombre">{{ conv.emailOtro ? conv.emailOtro.split('@')[0] : '' }}</div>
+          <div class="conv-ultimo">{{ conv.ultimoMensaje }}</div>
+        </div>
+        <div class="conv-fecha">
+          {{ conv.timestamp | date:'d/M' }}
+        </div>
+      </div>
+      <div *ngIf="!conversaciones.length" class="conv-empty">No hay conversaciones</div>
+    </div>
+  </div>
+
+  <div class="chatfull-main">
+    <div class="chat-header">
+      <div class="chat-title">Chat privado</div>
+      <div class="chat-subtitle" *ngIf="destinatarioSeleccionado">
+        Conversando con {{ destinatarioSeleccionado.email }}
+        <span *ngIf="destinatarioSeleccionado.rol">({{ destinatarioSeleccionado.rol }})</span>
+      </div>
+      <div class="chat-subtitle" *ngIf="!destinatarioSeleccionado">
+        Selecciona una conversación o destinatario
+      </div>
+    </div>
+
+    <div class="chat-info" *ngIf="authService.currentRole === 'cliente' && destinatarioSeleccionado">
+      Te atiende: {{ destinatarioSeleccionado.email }}
+      <span *ngIf="destinatarioSeleccionado.rol">({{ destinatarioSeleccionado.rol }})</span>
+    </div>
+
+    <div
+      class="chat-destino"
+      *ngIf="authService.currentRole === 'operador' || authService.currentRole === 'admin'"
+    >
+      <mat-form-field appearance="outline" class="chat-user-filter">
+        <mat-label>Buscar usuario</mat-label>
+        <input
+          matInput
+          type="text"
+          placeholder="Buscar usuario..."
+          [(ngModel)]="filtroUsuario"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="chat-destino-field">
+        <mat-label>Conversar con</mat-label>
+        <mat-select
+          [(value)]="destinatarioSeleccionado"
+          (selectionChange)="onSeleccionDestinatario($event.value)"
+        >
+          <mat-option *ngFor="let u of getUsuariosFiltrados()" [value]="u">
+            {{ u.email }} <span *ngIf="u.rol">({{ u.rol }})</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="chat-filtro">
+      <mat-form-field appearance="outline" class="chat-filtro-field">
+        <mat-label>Filtrar mensajes</mat-label>
+        <input
+          matInput
+          type="text"
+          placeholder="Buscar por texto o email"
+          [(ngModel)]="filtroTexto"
+        />
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="isLoading" class="chat-loading">Cargando mensajes...</div>
+    <div #messagesContainer class="mensajes-lista" *ngIf="!isLoading">
+      <ng-container *ngIf="destinatarioSeleccionado; else sinDestinatario">
+        <div
+          class="mensaje-wrapper"
+          *ngFor="let msg of mensajes | chatFilter: filtroTexto"
+          [appMyMessage]="msg.uidRemitente"
+        >
+          <div class="msg-header">
+            <span class="msg-email">{{ msg.emailRemitente }}</span>
+            <span class="msg-fecha">{{ msg.timestamp | date:'short' }}</span>
+          </div>
+          <div class="msg-texto">{{ msg.texto }}</div>
+        </div>
+
+        <div *ngIf="!mensajes?.length" class="chat-empty">
+          No hay mensajes todavia. Escribi el primero :)
+        </div>
+      </ng-container>
+
+      <ng-template #sinDestinatario>
+        <div class="chat-empty">
+          Selecciona una conversacion o destinatario para comenzar a chatear.
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="chat-input">
+      <mat-form-field appearance="outline" class="chat-input-field">
+        <mat-label>Escribi tu mensaje</mat-label>
+        <input
+          matInput
+          placeholder="Escribi tu mensaje"
+          [(ngModel)]="mensajeNuevo"
+          (keyup.enter)="enviarMensaje()"
+          [disabled]="!destinatarioSeleccionado || !uidActual"
+        />
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="enviarMensaje()"
+        [disabled]="!mensajeNuevo || !mensajeNuevo.trim() || !destinatarioSeleccionado || !uidActual"
+      >
+        Enviar
+      </button>
+    </div>
+  </div>
+</div>

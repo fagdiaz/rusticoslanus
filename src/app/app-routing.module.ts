@@ -14,8 +14,8 @@ import { AuthGuard } from './guard/auth.guard';
 import { CartComponent } from './components/cart/cart.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { OrderComponent } from './components/order/order.component';
-import { ChatComponent } from './components/chat/chat.component';
 import { OrdersAdminComponent } from './components/orders-admin/orders-admin.component';
+import { ChatFullComponent } from './components/chat-full/chat-full.component';
 
 
 const routes: Routes = [  
@@ -33,7 +33,7 @@ const routes: Routes = [
   {path:'cart',component:CartComponent},
   {path:'checkout',component:CheckoutComponent},
   {path:'order',component:OrderComponent},
-  {path:'chat',component:ChatComponent},
+  {path:'chat',component:ChatFullComponent},
   {path:'admin/pedidos',component:OrdersAdminComponent},
   {path:'**',component:ErrorComponent}
   
