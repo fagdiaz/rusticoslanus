@@ -3,9 +3,11 @@
 Pendientes FE (rusticoslanus) con foco en chat y UX.
 
 ---
-## MUST
-- Validar que el refresh inmediato de mensajes y unread al abrir/enviar (TAREA 5) funciona en widget y full; unread debe bajar al abrir la conversacion del otro (admin vs cliente).
-- Afinar input inferior en chat full (fijo abajo) y mensaje vacio mas claro.
+## MUST (FE chat)
+- Refinar UX visual del chat (parpadeos, microanimaciones, input, estados vacios).
+- Ajustar manejo de mensajes vacios / disable de boton enviar.
+- Revisar comportamiento de scroll en historiales largos y con filtro aplicado.
+> Nota: la validacion de unread badge (TAREA 6) esta COMPLETADA y verificada; no queda deuda funcional en ese punto.
 
 ---
 ## NICE TO HAVE

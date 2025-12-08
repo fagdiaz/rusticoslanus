@@ -7,6 +7,12 @@
 >
   <mat-icon *ngIf="!isOpen">chat</mat-icon>
   <mat-icon *ngIf="isOpen">close</mat-icon>
+  <span
+    *ngIf="!isOpen && (unreadConversationsCount$ | async) as count"
+    class="chat-unread-badge"
+  >
+    {{ count }}
+  </span>
 </button>
 
 <div class="chat-widget-container" *ngIf="isOpen">

@@ -3,7 +3,7 @@
 Tareas del frontend para cambios chicos y controlados (Codex/IA).
 
 ---
-## Tabla de estado (TAREAS 1-5)
+## Tabla de estado (TAREAS 1-6)
 | TAREA | Estado | Detalle |
 | --- | --- | --- |
 | T1 | COMPLETADA | Integracion /chat/unread en FE (merge unread en conversaciones). |
@@ -11,6 +11,7 @@ Tareas del frontend para cambios chicos y controlados (Codex/IA).
 | T3 | COMPLETADA | Polling central 8000 ms (conversaciones + unread) y mensajes por chatId. |
 | T4 | COMPLETADA | Scroll interno + limites DEFAULT_CHAT_LIMIT=10 y FILTER_CHAT_LIMIT=200 con modo filtro. |
 | T5 | COMPLETADA (validacion pendiente) | Refresh inmediato de mensajes y unread al abrir/enviar (refreshMessagesOnce / refreshUnreadOnce); falta QA de UX. |
+| T6 | COMPLETADA | Fix definitivo de unread badge (FE + BE unificado): optimismo a 0 al abrir, GET /chat marca leidos, GET /chat/unread sincroniza; proteccion contra polling 8000 ms; badges desde `unreadByChatId$ + conversationsWithUnread$`; validado QA (admin + 2 clientes). |
 
 ---
 ## PRIORIDAD ALTA (proximos dias)

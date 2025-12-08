@@ -41,9 +41,17 @@ Frontend en Angular acoplado a backend Node/Express + Firestore. Vistas principa
 - Polling centralizado en `chat.service.ts` cada 8000 ms: `/chat/conversaciones` + `/chat/unread` -> `conversations$` con unread mergeado.
 - Mensajes por chatId con `messages$` y limites: DEFAULT_CHAT_LIMIT=10, FILTER_CHAT_LIMIT=200 (modo filtro); scroll interno en widget y full.
 - Manejo de cuota: ante 503 quota_exceeded se expone flag (`quotaExcedida$`) y se detiene polling; mensaje en header y en chat.
-- Unread y mensajes: refresco inmediato al abrir/enviar (`refreshUnreadOnce` + `refreshMessagesOnce`); pendiente QA/UX para validar que baja unread en todos los flujos.
+- Unread y mensajes: refresco inmediato al abrir/enviar; pendiente QA/UX para validar que baja unread en todos los flujos.
 - Envio/recepcion funcional; scroll interno en widget y full.
 - Pendientes: ajustar UX de input inferior y mensaje vacio; minimizar parpadeos.
+
+#### Estado actual del chat - unread
+- Polling cada 8000 ms a `/chat/conversaciones` + `/chat/unread` (vista /chat).
+- Polling global de unread cada 40000 ms iniciado desde el widget al resolver `AuthService.user$`, aun sin entrar a `/chat`.
+- Al abrir un chat, el FE setea unread=0 para ese chatId, llama `GET /chat` (BE marca leidos) y ejecuta `refreshUnreadOnce()` para traer el mapa real.
+- Hay una ventana de estado fresco que evita que el primer ciclo de polling pise el valor nuevo.
+- `conversationsWithUnread$` combina conversaciones + mapa de unread y es la fuente unica de badges en widget y vista full; `unreadConversationsCount$` deriva de `unreadSubject`.
+- QA confirma que la burbuja baja a 0 al leer/responder y el polling no reintroduce valores viejos; el badge del widget se muestra aun si no se visita `/chat`.
 
 ---
 ## 4. Estado Tecnico General del Frontend

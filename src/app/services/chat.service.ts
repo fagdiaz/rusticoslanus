@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, combineLatest } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, combineLatest, interval, EMPTY, Subscription } from 'rxjs';
+import { catchError, map, switchMap, startWith, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 const REFRESH_INTERVAL_MS = 8000;
@@ -55,6 +55,12 @@ export class ChatService {
   conversationsWithUnread$ = combineLatest([this.conversationsSubject.asObservable(), this.unreadSubject.asObservable()]).pipe(
     map(([convs, unread]) => convs.map(conv => ({ ...conv, unread: unread[conv.chatId] ?? 0 })))
   );
+  unreadConversationsCount$ = this.unreadSubject.asObservable().pipe(
+    map((unreadMap) => {
+      if (!unreadMap) return 0;
+      return Object.values(unreadMap).filter(v => (v || 0) > 0).length;
+    })
+  );
 
   private messagesByChatId = new Map<string, MensajeChat[]>();
   private filterActive = false;
@@ -65,6 +71,7 @@ export class ChatService {
   private lastUidActual: string | null = null;
   private lastMsgPair: { uidActual: string; uidOtro: string; limit: number; chatKey: string } | null = null;
   private unreadFreshUntil = 0;
+  private globalUnreadPollingSub?: Subscription;
 
   constructor(
     private http: HttpClient,
@@ -396,5 +403,21 @@ export class ChatService {
       this.conversationsSubject.next(merged);
       console.log('[FE] refreshUnreadOnce result', record);
     });
+  }
+
+  initGlobalUnreadPolling(): void {
+    if (this.globalUnreadPollingSub) {
+      return;
+    }
+    this.globalUnreadPollingSub = this.authService.user$.pipe(
+      switchMap((user) => {
+        const uid = (user as any)?.uid;
+        if (!uid) return EMPTY;
+        return interval(40000).pipe(
+          startWith(0),
+          tap(() => this.refreshUnreadOnce(uid))
+        );
+      })
+    ).subscribe();
   }
 }
