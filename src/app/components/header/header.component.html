@@ -23,6 +23,9 @@
     <!-- Cuenta -->
     <span *ngIf="userName" style="color: white; margin-right: 10px;"> Hola, {{ userName }}</span>
     <span *ngIf="rolActual" style="color: white; margin-right: 10px;">Rol: {{ rolActual }}</span>
+    <span *ngIf="quotaExceeded" style="color: #ffd54f; margin-right: 10px; font-size: 13px;">
+      Servicio no disponible (limite de Firestore). Intentalo mas tarde.
+    </span>
 
     <button mat-icon-button [matMenuTriggerFor]="menu" title="Mi Cuenta" style="color: white;">
         <mat-icon>account_circle</mat-icon>

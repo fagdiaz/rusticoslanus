@@ -1,5 +1,8 @@
-<div class="chat-page-container">
+﻿<div class="chat-page-container">
   <mat-card class="chat-card">
+    <div *ngIf="quotaExcedida" style="color:#b00020; font-size:13px; margin-bottom:6px;">
+      No se puede cargar el chat en este momento (limite de Firestore).
+    </div>
     <div class="chat-header">
       <div class="chat-title">Chat privado</div>
       <div class="chat-subtitle" *ngIf="authService.currentRole === 'cliente'">
@@ -21,17 +24,19 @@
     >
       <h4>Conversaciones</h4>
       <div class="conv-lista">
-        <div
-          class="conv-item"
-          *ngFor="let conv of conversaciones"
-          (click)="seleccionarConversacion(conv)"
+      <div
+        class="conv-item"
+        *ngFor="let conv of conversaciones; trackBy: trackByChatId"
+        (click)="seleccionarConversacion(conv)"
+          [class.unread]="(conv?.unread || 0) > 0"
         >
           <div class="conv-main">
             <span class="conv-email">
               {{ getNombreDesdeEmail(conv.emailOtro) }}
             </span>
+            <span class="badge-unread" *ngIf="(conv?.unread || 0) > 0">{{ conv.unread }}</span>
             <span class="conv-ultimo">
-              — {{ conv.ultimoMensaje }}
+              - {{ conv.ultimoMensaje }}
             </span>
           </div>
           <div class="conv-fecha">
@@ -82,10 +87,10 @@
     <!-- Lista de mensajes -->
     <div *ngIf="isLoading" class="chat-loading">Cargando mensajes...</div>
 
-    <div #messagesContainer class="mensajes-lista" *ngIf="!isLoading">
+    <div #messagesContainer class="mensajes-lista chat-messages" *ngIf="!isLoading">
       <div
         class="mensaje-wrapper"
-        *ngFor="let msg of mensajes | chatFilter: filtroTexto"
+        *ngFor="let msg of mensajes | chatFilter: filtroTexto; trackBy: trackByMsgId"
         [appMyMessage]="msg.uidRemitente"
       >
         <div class="msg-header">
@@ -102,7 +107,7 @@
       </div>
     </div>
 
-    <!-- Input y botón de envío -->
+    <!-- Input y boton de envio -->
     <div class="chat-input">
       <!-- Campo de mensaje: solo placeholder -->
       <mat-form-field

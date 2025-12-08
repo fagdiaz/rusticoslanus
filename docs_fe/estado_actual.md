@@ -1,8 +1,8 @@
-﻿# Estado Actual - FRONTEND (Angular)
+# Estado Actual - FRONTEND (Angular)
 Ultima actualizacion: 2025-12-07
 
 ## 1. Descripcion General
-Frontend en Angular, acoplado a backend Node/Express + Firestore. Vistas principales:
+Frontend en Angular acoplado a backend Node/Express + Firestore. Vistas principales:
 - Registro e inicio de sesion.
 - Navegacion general del sitio.
 - Gestion y visualizacion de productos.
@@ -14,19 +14,19 @@ Frontend en Angular, acoplado a backend Node/Express + Firestore. Vistas princip
 ## 2. Componentes Principales
 ### 2.1 ChatComponent (Widget)
 - Chat embebido accesible desde cualquier pagina.
-- 1 a 1: cliente ↔ operador/admin.
-- Funciones: cargar/enviar mensajes, auto-scroll, auto-refresh (1s), auto-seleccion para rol cliente, lista de conversaciones (resumida).
+- 1 a 1: cliente ? operador/admin.
+- Lista de conversaciones con badge de unread; mensajes con scroll interno; input/boton abajo.
+- Polling de mensajes segun chat activo; autoseleccion de soporte para rol cliente.
 
 ### 2.2 ChatFullComponent (/chat)
-- Vista ampliada con panel lateral de conversaciones.
-- Filtro de mensajes (solo texto).
-- Mejor visualizacion para operadores/admin.
-- Pendientes: estilos input inferior, mensaje vacio claro.
+- Vista ampliada con panel lateral de conversaciones + badge de unread.
+- Vista de mensajes con scroll interno; filtro de mensajes (solo texto), selector de usuario, input fijo abajo.
+- Pendientes: estilo input inferior y mensaje vacio mas claro.
 
 ### 2.3 UsuariosComponent
 - Lista de usuarios.
-- Calculo de edad robusto (mismas posibles fuentes, rango 0-120; muestra "-" si invalido).
-- En progreso: filtro por email/nombre/rol, mostrar datos adicionales.
+- Calculo de edad robusto (formatos multiples, rango 0-120; muestra "-" si invalido).
+- En progreso: filtro por email/nombre/rol, datos adicionales.
 
 ### 2.4 ProductosComponent
 - Listado de productos desde backend.
@@ -38,33 +38,34 @@ Frontend en Angular, acoplado a backend Node/Express + Firestore. Vistas princip
 
 ---
 ## 3. Estado Tecnico del Chat (FE)
-- Envio/recepcion funcional.
-- Widget: conversaciones y mensajes OK.
-- Chat Full: mensajes + conversaciones OK.
-- Pendientes: ajustar estilo input inferior, mensaje "No hay mensajes todavia", filtro solo por texto.
+- Polling centralizado en `chat.service.ts` cada 8000 ms: `/chat/conversaciones` + `/chat/unread` -> `conversations$` con unread mergeado.
+- Mensajes por chatId con `messages$` y limites: DEFAULT_CHAT_LIMIT=10, FILTER_CHAT_LIMIT=200 (modo filtro); scroll interno en widget y full.
+- Manejo de cuota: ante 503 quota_exceeded se expone flag (`quotaExcedida$`) y se detiene polling; mensaje en header y en chat.
+- Unread y mensajes: refresco inmediato al abrir/enviar (`refreshUnreadOnce` + `refreshMessagesOnce`); pendiente QA/UX para validar que baja unread en todos los flujos.
+- Envio/recepcion funcional; scroll interno en widget y full.
+- Pendientes: ajustar UX de input inferior y mensaje vacio; minimizar parpadeos.
 
 ---
 ## 4. Estado Tecnico General del Frontend
 - Proyecto estable sin errores criticos.
-- Codex integrado para automatizacion de codigo.
-- Docs FE: agentes_ia_rusticos.md, backlog.md, prompts_codex.md, procesos_trabajo.md, tareas_pendientes.md.
+- Codex integrado para automatizacion.
+- Docs FE en `docs_fe`: agentes_ia_rusticos.md, backlog.md, prompts_codex.md, procesos_trabajo.md, tareas_pendientes.md, arquitectura_chat.md, estado_actual.md.
 
 ---
-## 5. Reglas para Codex (MUY IMPORTANTE)
+## 5. Reglas para Codex (FE)
 - No mezclar FE con BE.
-- Mantener estilos compactos en widget; filtro solo en chat-full.
-- No eliminar logica estable: autoSeleccionarDestinatario, refrescarMensajesSinSpinner, cargarConversaciones.
-- No modificar `chat.service.ts` salvo pedido explicito.
+- Mantener widget compacto; filtro visible solo en chat full.
+- No romper logica: autoSeleccionarDestinatario, polling 8000 ms, unread, mensajesByChatId, quota_exceeded.
 - Cambios en mat-field sin romper scroll del chat.
 - Usar diffs/snippets claros; si un archivo no existe, decir "NO ENCONTRADO".
 
 ---
 ## 6. Como probar el Chat
-1. Loguearse como admin -> `/chat`.
-2. Loguearse como cliente -> iniciar charla con soporte.
+1. Loguearse como admin -> `/chat` (sidebar, unread, mensajes con scroll).
+2. Loguearse como cliente -> abrir widget -> autoseleccion de soporte; ver unread y mensajes con scroll.
 3. Verificar conversacion en sidebar del admin.
 4. Enviar/recibir mensajes en ambos lados.
-5. Testear auto-refresh.
+5. Validar que unread baja al abrir la conversacion (refresh inmediato) y se mantiene con el polling de 8000 ms.
 
 ---
 ## 7. Dependencias relevantes (FE)
@@ -75,18 +76,12 @@ Frontend en Angular, acoplado a backend Node/Express + Firestore. Vistas princip
 
 ---
 ## 8. Estado general del FE
-Funciona estable, chat operativo y usabilidad aceptable. Faltan tareas esteticas/UX, notificaciones de no leidos e integracion final.
+Funciona estable; chat operativo (widget y full) con unread y polling central. Faltan tareas esteticas/UX y optimizaciones menores.
 
-## 9. Notas Finales
-- Proyecto estable.
-- Chat correcto en widget y aceptable en version full.
-- Listo para agregar Ionic y mejorar estetica.
-- Bases de datos y colecciones consistentes.
-
-## 10. Proximos Pasos (resumen)
+## 9. Proximos Pasos (resumen)
 1. Mejoras de estilo (chat, productos, pedidos).
 2. Implementacion de Ionic para version movil.
 3. Unificar tipografias y tamanos de controles.
 4. Agregar carrusel de imagenes en productos.
 5. Agregar campo observaciones/domicilio en pedidos.
-6. Revisar performance del auto-refresh en chat.
+6. Seguir optimizando refresco/scroll del chat.

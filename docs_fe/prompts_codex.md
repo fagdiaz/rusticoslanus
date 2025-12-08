@@ -1,153 +1,108 @@
-﻿# Prompts estandar para Codex - FRONTEND (Angular)
+# Prompts estandar para Codex - FRONTEND (Angular)
 
-Este documento define prompts seguros, modulares y precisos para trabajar con Codex sobre el frontend de RusticosLanus (Angular + Firebase).
+Guia de prompts seguros y acotados para el FE de RusticosLanus.
 
-## Reglas generales para FE (muy importante)
-- SIEMPRE indicarle a Codex:
-  - el archivo exacto a modificar
-  - que comportamiento se espera
-  - que NO toque otros archivos
-- Hacer cambios pequenos -> un prompt por funcionalidad
-- Evitar pedidos ambiguos tipo "arregla el chat"
-- Evitar prompts grandes que mezclen FE + BE
+## Reglas generales para FE
+- Indicar siempre archivos exactos y objetivo concreto.
+- Cambios chicos: un prompt por funcionalidad.
+- No mezclar FE + BE.
+- Si un archivo no existe, pedir que responda "NO ENCONTRADO".
+- Pedir que no toque routing, guards ni servicios ajenos al alcance.
 
 ---
+## Plantillas resumidas
 
-# 1. Prompt para modificar un componente Angular
-Quiero que trabajes SOLO sobre el FRONTEND Angular.
-Modifica este archivo:
-- src/app/components/NOMBRE/NOMBRE.component.ts
-- src/app/components/NOMBRE/NOMBRE.component.html
-- src/app/components/NOMBRE/NOMBRE.component.css (si hace falta)
-
-Objetivo:
-- DESCRIBIR CAMBIO QUE QUIERO.
-
-Reglas:
-- No modifiques servicios, modulos ni routing.
-- No reescribas el componente entero salvo que te lo pida explicitamente.
-- No agregues dependencias nuevas.
-- Mantener compatibilidad con lo existente.
-
----
-
-# 2. Prompt para agregar logica nueva a un componente
-Trabaja SOLO sobre este archivo:
-- src/app/components/NOMBRE/NOMBRE.component.ts
-
-Objetivo: AGREGAR FUNCIONALIDAD.
-
-Instrucciones para Codex:
-- Agrega metodos nuevos, no reemplaces los existentes.
-- No toques HTML ni CSS.
-- No cambies firmas de funciones existentes.
-- No eliminar imports, solo agregar si es necesario.
-
----
-
-# 3. Prompt para cambiar el HTML de un componente sin romper nada
-Trabaja SOLO sobre este archivo:
-- src/app/components/NOMBRE/NOMBRE.component.html
-
-Objetivo: DESCRIBIR EXACTAMENTE EL CAMBIO EN HTML.
-
-Reglas:
-- No cambiar bindings existentes.
-- No eliminar *ngIf, *ngFor o eventos actuales.
-- Si hay que eliminar algo, pedimelo explicitamente.
-- Respeta el layout y estilos existentes.
-
----
-
-# 4. Prompt para modificar estilos de un componente
-Trabaja SOLO sobre este archivo:
-- src/app/components/NOMBRE/NOMBRE.component.css
-
-Objetivo: DESCRIBIR CAMBIO VISUAL.
-
-Reglas:
-- No tocar nombres de clases.
-- No mover la estructura HTML.
-- Aplicar estilos nuevos de forma aislada.
-
----
-
-# 5. Prompt para tocar un servicio Angular
-Trabaja SOLO sobre este archivo:
-- src/app/services/NOMBRE.service.ts
-
-Objetivo: DESCRIBIR CAMBIO.
-
-Reglas:
-- No cambiar endpoints salvo que lo pida.
-- No cambiar nombres de metodos existentes.
-- Agregar nuevos metodos si es necesario.
-- Mantener la compatibilidad con el BE.
-
----
-
-# 6. Prompt para arreglar errores de compilacion
-Hay un error de compilacion en Angular.
-Trabaja SOLO sobre estos archivos: LISTAR ARCHIVOS EXACTOS
-
-Objetivo: DESCRIBIR ERROR Y QUE ESPERO.
-
-Reglas:
-- No reescribir componentes completos.
-- No agregar logicas nuevas.
-- Solamente corregir el error.
-
----
-
-# 7. Prompt para pedir un refactor controlado
-Quiero un refactor suave en:
-- NOMBRE.component.ts
-
-Objetivo:
-- Mejorar legibilidad del codigo.
-- Extraer funciones pequenas.
-- No cambiar ninguna funcionalidad.
-- No modificar HTML ni CSS.
-- No modificar servicios ni routing.
-
----
-
-# 8. Prompt especial para el chat (muy usado en este proyecto)
+### 1) Modificar un componente Angular
+```
 Trabaja SOLO sobre:
-- src/app/components/chat/chat.component.ts
-- src/app/components/chat/chat.component.html
-- src/app/components/chat/chat.component.css
+- src/app/components/NOMBRE/NOMBRE.component.ts
+- ...html
+- ...css (si hace falta)
+Objetivo: [cambio puntual].
+Reglas: no tocar servicios, modulos ni routing. No reescribir todo el componente.
+```
 
-Objetivo: DESCRIBIR EXACTAMENTE QUE QUIERO (ej: agregar filtro de mensajes).
+### 2) Agregar logica nueva a un componente
+```
+Trabaja SOLO sobre: ...component.ts
+Objetivo: [funcionalidad].
+Reglas: agrega metodos nuevos, no cambies firmas ni elimines imports; no toques HTML/CSS.
+```
 
-Reglas:
-- No romper selectors existentes.
-- No modificar servicios de chat.
-- No modificar ChatFullComponent a menos que lo pida explicitamente.
-- No mezclar widget y chat full.
+### 3) Cambiar solo el HTML
+```
+Trabaja SOLO sobre: ...component.html
+Objetivo: [cambio en plantilla].
+Reglas: no romper bindings, *ngIf/*ngFor/eventos; respetar layout.
+```
+
+### 4) Modificar estilos
+```
+Trabaja SOLO sobre: ...component.css
+Objetivo: [ajuste visual].
+Reglas: no cambiar nombres de clases ni estructura HTML.
+```
+
+### 5) Tocar un servicio Angular
+```
+Trabaja SOLO sobre: src/app/services/NOMBRE.service.ts
+Objetivo: [cambio].
+Reglas: no cambiar endpoints ni firmas existentes salvo pedido explicito; agrega metodos si es necesario; mantener compatibilidad con el BE.
+```
+
+### 6) Arreglar error de compilacion
+```
+Hay un error en Angular.
+Trabaja SOLO sobre: [archivos].
+Objetivo: corregir el error.
+Reglas: no reescribir componentes ni agregar logicas nuevas; solo fix.
+```
+
+### 7) Refactor suave
+```
+Refactor en: ...component.ts
+Objetivo: legibilidad; extraer funciones pequenas; sin cambiar funcionalidad.
+Reglas: no tocar HTML/CSS ni servicios/routing.
+```
+
+### 8) Prompt especial para el chat
+```
+Trabaja SOLO sobre:
+- src/app/components/chat/chat.component.*
+- src/app/components/chat-full/chat-full.component.*
+- (si aplica) src/app/services/chat.service.ts
+Objetivo: [ajuste de chat].
+Reglas: no romper polling 8000 ms, unread, messagesByChatId, quota_exceeded; no tocar otros servicios/rutas.
+```
+
+### 9) Crear componente nuevo
+```
+Crear componente Angular: NOMBRE (ts/html/css).
+Indicar donde importarlo (app.module.ts) y si afecta routing.
+```
 
 ---
+## Prompt tipo Implementador (ejemplo breve, usado en TAREAS 2-4)
+```
+Actua como Implementador FE. Genera un prompt para Codex FE que:
+- Modifique chat.service.ts, chat.component.* y chat-full.component.*
+- Integre /chat/unread en conversations$ y muestre badges.
+- Mantenga polling 8000 ms y limits DEFAULT/FILTER.
+- No toque routing ni otros servicios.
+- Entregue diffs/snippets claros.
+```
+## Prompt tipo Implementador (ejemplo breve, usado en TAREA 5)
+```
+Actua como Implementador FE. Genera un prompt para Codex FE que:
+- Use chat.service.ts, chat.component.* y chat-full.component.*.
+- Agregue refresh inmediato de mensajes y unread al abrir/enviar (refreshMessagesOnce / refreshUnreadOnce).
+- Mantenga polling central 8000 ms y quota_exceeded.
+- No toque routing, guards ni servicios ajenos.
+- Entregue diffs/snippets claros y solo archivos del scope.
+```
 
-# 9. Prompt para creacion de componentes nuevos
-Necesito crear un nuevo componente Angular:
-- NOMBRE DEL COMPONENTE
-
-Archivos a generar:
-- .ts
-- .html
-- .css
-
-Objetivo: DESCRIBIR QUE HACE EL NUEVO COMPONENTE.
-
-Reglas:
-- Indicar donde se importa: app.module.ts
-- No modificar routing salvo que lo indique.
-
----
-
-## Buenas practicas al usar Codex en Angular
-- Pedir SIEMPRE cambios pequenos.
-- Aclarar: "No tocar otros archivos".
-- Despues de cada prompt -> hacer `git diff` para revisar.
-- Si Codex rompe algo -> `git restore` y repetir con prompt mas corto.
-- No mezclar BE + FE en un mismo prompt.
+## Buenas practicas
+- Revisar `git diff` despues de cada cambio.
+- Si Codex rompe algo -> restaurar y repetir con prompt mas corto.
+- En chat: mantener autoSeleccionarDestinatario, polling 8000 ms, unread, scroll interno.
+- Probar login admin + 2 clientes, mensajes cruzados, filtro y badges tras cambios.

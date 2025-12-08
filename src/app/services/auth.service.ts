@@ -12,6 +12,8 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   private roleSubject = new BehaviorSubject<string | null>(null);
   private createdViaSignup = false;
+  private quotaExceededSubject = new BehaviorSubject<boolean>(false);
+  private lastUidRolCargado: string | null = null;
 
   constructor(
     private router: Router,
@@ -55,14 +57,25 @@ export class AuthService {
 
   // === Rol del usuario (backend) ===
   private cargarRolDesdeBackend(uid: string): void {
+    if (this.quotaExceededSubject.value) return;
+    if (this.lastUidRolCargado === uid && this.roleSubject.value) return;
+
     this.http.get<any>('http://127.0.0.1:3000/obtenerUsuario', { params: { uid } })
       .subscribe({
         next: (resp) => {
           console.log('Usuario/rol obtenido desde backend:', resp);
           this.roleSubject.next(resp.usuario?.rol || null);
           this.createdViaSignup = false;
+          this.quotaExceededSubject.next(false);
+          this.lastUidRolCargado = uid;
         },
         error: (err) => {
+          if (err?.status === 503 && (err.error === 'quota_exceeded' || err?.error?.error === 'quota_exceeded')) {
+            console.warn('AuthService: cuota de Firestore excedida al obtener usuario');
+            this.quotaExceededSubject.next(true);
+            this.roleSubject.next(null);
+            return;
+          }
           if (err.status === 404 && this.createdViaSignup) {
             this.roleSubject.next('cliente');
           } else {
@@ -80,6 +93,14 @@ export class AuthService {
 
   get role$(): Observable<string | null> {
     return this.roleSubject.asObservable();
+  }
+
+  get quotaExceeded$(): Observable<boolean> {
+    return this.quotaExceededSubject.asObservable();
+  }
+
+  get quotaExceeded(): boolean {
+    return this.quotaExceededSubject.value;
   }
 
   get currentRole(): string | null {

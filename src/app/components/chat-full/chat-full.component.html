@@ -4,12 +4,16 @@
     <div class="sidebar-list">
       <div
         class="conv-item"
-        *ngFor="let conv of conversaciones"
+        *ngFor="let conv of conversaciones; trackBy: trackByChatId"
         (click)="seleccionarConversacion(conv)"
         [class.active]="destinatarioSeleccionado?.uid === conv.uidOtro"
+        [class.unread]="(conv?.unread || 0) > 0"
       >
         <div class="conv-item-main">
-          <div class="conv-nombre">{{ conv.emailOtro ? conv.emailOtro.split('@')[0] : '' }}</div>
+          <div class="conv-nombre">
+            {{ conv.emailOtro ? conv.emailOtro.split('@')[0] : '' }}
+            <span class="badge-unread" *ngIf="(conv?.unread || 0) > 0">{{ conv.unread }}</span>
+          </div>
           <div class="conv-ultimo">{{ conv.ultimoMensaje }}</div>
         </div>
         <div class="conv-fecha">
@@ -23,12 +27,15 @@
   <div class="chatfull-main">
     <div class="chat-header">
       <div class="chat-title">Chat privado</div>
+      <div *ngIf="quotaExcedida" style="color:#b00020; font-size:13px;">
+        No se puede cargar el chat en este momento (limite de Firestore).
+      </div>
       <div class="chat-subtitle" *ngIf="destinatarioSeleccionado">
         Conversando con {{ destinatarioSeleccionado.email }}
         <span *ngIf="destinatarioSeleccionado.rol">({{ destinatarioSeleccionado.rol }})</span>
       </div>
       <div class="chat-subtitle" *ngIf="!destinatarioSeleccionado">
-        Selecciona una conversación o destinatario
+        Selecciona una conversacion o destinatario
       </div>
     </div>
 
@@ -77,11 +84,11 @@
     </div>
 
     <div *ngIf="isLoading" class="chat-loading">Cargando mensajes...</div>
-    <div #messagesContainer class="mensajes-lista" *ngIf="!isLoading">
+    <div #messagesContainer class="mensajes-lista chat-messages" *ngIf="!isLoading">
       <ng-container *ngIf="destinatarioSeleccionado; else sinDestinatario">
         <div
           class="mensaje-wrapper"
-          *ngFor="let msg of mensajes | chatFilter: filtroTexto"
+          *ngFor="let msg of mensajes | chatFilter: filtroTexto; trackBy: trackByMsgId"
           [appMyMessage]="msg.uidRemitente"
         >
           <div class="msg-header">

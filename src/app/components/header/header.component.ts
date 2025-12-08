@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class HeaderComponent implements OnInit {
   userName: string | null = null;
   rolActual: string | null = null;
+  quotaExceeded = false;
 
   constructor(private authService: AuthService) {}
 
@@ -30,6 +31,10 @@ export class HeaderComponent implements OnInit {
     this.authService.role$.subscribe(rol => {
       this.rolActual = rol ? rol.toLowerCase() : null;
       console.log('ROL EN HEADER:', this.rolActual);
+    });
+
+    this.authService.quotaExceeded$.subscribe(flag => {
+      this.quotaExceeded = flag;
     });
   }
 

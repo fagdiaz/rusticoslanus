@@ -1,56 +1,38 @@
-﻿# Backlog - Frontend (Angular)
+# Backlog - Frontend (Angular)
 
-Este documento lista las tareas pendientes del frontend, ordenadas por prioridad y pensadas para trabajar con IA (ChatGPT / Codex) en cambios chicos y controlados.
+Tareas del frontend para cambios chicos y controlados (Codex/IA).
 
 ---
-## Hecho recientemente
-- Calculo de edad robusto en `/users` (getEdad, soporta multiples formatos, rango 0-120).
-- Chat widget y chat full funcionales con conversaciones y filtros segun modo.
+## Tabla de estado (TAREAS 1-5)
+| TAREA | Estado | Detalle |
+| --- | --- | --- |
+| T1 | COMPLETADA | Integracion /chat/unread en FE (merge unread en conversaciones). |
+| T2 | COMPLETADA | Badges de unread en widget y chat full. |
+| T3 | COMPLETADA | Polling central 8000 ms (conversaciones + unread) y mensajes por chatId. |
+| T4 | COMPLETADA | Scroll interno + limites DEFAULT_CHAT_LIMIT=10 y FILTER_CHAT_LIMIT=200 con modo filtro. |
+| T5 | COMPLETADA (validacion pendiente) | Refresh inmediato de mensajes y unread al abrir/enviar (refreshMessagesOnce / refreshUnreadOnce); falta QA de UX. |
 
-## PRIORIDAD ALTA (PROXIMOS DIAS)
-### 1. Chat Full - Ajustes de layout y UX
-Objetivo: que la vista `/chat` sea comoda y estable.
-- Mantener siempre visible: listado de mensajes, input "Escribi tu mensaje", boton "Enviar".
-- Evitar que input/boton suban cuando no hay conversacion o mensajes.
-- Asegurar flex column, lista ocupa alto disponible, barra de input fija abajo.
-Done cuando: sin conversacion -> layout estable; al seleccionar conversacion -> mensajes + input + boton correctos.
+---
+## PRIORIDAD ALTA (proximos dias)
+- Afinar input inferior en chat full (estatico, sin saltos) y mensaje vacio claro.
+- Minimizar parpadeo en sidebar/mensajes (trackBy + updates in-place).
+- Revisar modo filtro (limit 200) vs modo normal (limit 10) y scroll interno.
 
-### 2. Unificar estilos de campos (mat-form-field)
-Objetivo: campos de texto de tamano coherente.
-- Revisar "Buscar usuario", "Conversar con", "Escribi tu mensaje".
-- Clase comun `.compact-field` para altura/fuente/padding.
-- Aplicar en widget y chat full.
-Done cuando: mat-form-field del chat se ven parejos y no se cortan labels/placeholders.
+---
+## PRIORIDAD MEDIA
+- /users: filtro por email/rol/nombre; mostrar edad limpia (o "-") y fecha de alta si existe.
+- Carrito/Pedidos: campo "observaciones/domicilio" en checkout y listado; orden/estado visible en pedidos.
 
-### 3. Limpieza de codigo en componentes de chat
-Objetivo: simplificar mantenimiento.
-- Revisar `chat.component.ts`, `chat-full.component.ts`, templates y CSS.
-- Eliminar imports/props/metodos no usados; sin romper: auto-refresh, autoSeleccionarDestinatario, carga de conversaciones.
-Done cuando: sin warnings de unused y funcionalidad intacta.
+---
+## PRIORIDAD BAJA / NICE TO HAVE (FE)
+- Paginacion o carga hacia mensajes mas viejos en el chat.
+- Indicadores de "escribiendo" en chats activos.
+- Mejoras de diseno mobile / inicio de Ionic.
+- Unificar tipografias, tamanos y paleta; modernizar tarjetas y sidebar.
 
-## PRIORIDAD MEDIA (DESPUES DE ESTABILIZAR CHAT)
-### 4. /users - mejoras de visualizacion
-Objetivo: listado util para pruebas/demo.
-- Filtro por email/rol.
-- Mostrar edad en formato consistente (edad o "-").
-- Opcional: fecha de alta, orden por email.
-Done cuando: se encuentra rapido por email/rol; edades limpias.
-
-### 5. Carrito/pedidos - campo "observaciones"
-Objetivo: campo libre en checkout y modelo FE.
-- Campo opcional, max. ~500 chars.
-- Enviar al backend cuando este listo.
-Done cuando: se puede enviar observaciones sin romper pedidos.
-
-## PRIORIDAD BAJA (MEJORAS FUTURAS)
-### 6. Mejora visual general
-Objetivo: dejar la app lista para presentacion del TP.
-- Ajustar tipografias, tamanos, margenes.
-- Unificar paleta (botones, cards, fondos de chat).
-
-## Notas para uso con IA / Codex (Frontend)
-- Siempre especificar archivo exacto y objetivo.
-- Cambios modestos: una seccion de estilos o un componente/servicio por vez.
-- No romper logica de chatId, auto-refresh, autoSeleccionarDestinatario.
-- Revisar con `git diff` despues de cada cambio.
-- No mezclar BE + FE en el mismo prompt.
+---
+## Notas para uso con IA (FE)
+- Indicar archivos exactos y alcance acotado.
+- No tocar BE en prompts de FE.
+- No romper logica de chatId, autoSeleccionarDestinatario, polling 8000 ms, quota_exceeded.
+- Revisar diffs luego de cada cambio.

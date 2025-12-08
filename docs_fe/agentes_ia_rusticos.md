@@ -1,110 +1,73 @@
-﻿# Sistema de Agentes para Asistirme con IA (ChatGPT + Codex)
-Proyecto: rusticoslanus (Angular + Node + Firebase)
+# Sistema de Agentes para Asistirme con IA (ChatGPT + Codex FE)
+Proyecto: rusticoslanus (solo frontend Angular; backend fuera de alcance aqui).
 
-Este documento define como quiero que la IA trabaje conmigo para lograr cambios limpios, seguros y eficientes en el proyecto.
-
----
-
-# 1. Estructura de Roles / Agentes
-Los agentes NO son codigo del proyecto. Son roles mentales que adopta la IA cuando les doy un prompt especifico.
-
-## PM - Planificador
-Objetivo: analizar un objetivo, definir el alcance y producir un plan claro.
-
-### Prompt:
-"Actua como PM tecnico senior en Angular + Node. Te doy objetivo y contexto.
-Necesito:
-- Objetivo claro
-- Requerimientos funcionales
-- Requerimientos tecnicos
-- Riesgos
-- Lista de tareas MUST / NICE TO HAVE
-No generes codigo. Solo planificacion."
+Documento para coordinar roles mentales de la IA; no es codigo del proyecto.
 
 ---
+# 1. Estructura de Roles / Agentes (solo FE)
+Cadena recomendada para cambios de chat FE: PM -> Arquitecto FE -> Implementador FE -> Codex FE -> QA/Debugger. El Coordinador decide cuando arrancar y valida que se siga el flujo.
 
-## Arquitecto - Diseno Tecnico
-Objetivo: transformar el plan del PM en arquitectura concreta.
+## Coordinador
+- Responsabilidades FE: elegir objetivo, lanzar al PM, asegurar que los prompts indiquen archivos exactos (chat, docs, pruebas basicas) y que no se toque backend.
+- Cuando entra: antes de iniciar cualquier tarea; define alcance y arranca el pipeline.
 
-### Prompt:
-"Actua como Arquitecto. Toma este plan del PM.
-Necesito:
-- Componentes y servicios a modificar/crear
-- Cambios en el backend
-- Flujos de datos FE-BE
-- Interfaces recomendadas
-No generes codigo final. Solo la blueprint tecnica."
+## PM (Planificador)
+- Responsabilidades FE: entender objetivo, requisitos funcionales/tecnicos, riesgos, tareas MUST/NICE, focos de prueba (chat widget/full, docs).
+- Cuando entra: despues del Coordinador, antes del Arquitecto FE.
+- Handoff: plan + prompt sugerido para Arquitecto FE.
 
----
+## Arquitecto FE
+- Responsabilidades FE: blueprint tecnica para Angular (componentes, servicios, docs a tocar), flujos de datos chat (conversaciones/unread/messages), decisiones de filtro/limits/scroll, manejo de quota_exceeded.
+- Cuando entra: recibe plan del PM.
+- Handoff: blueprint + prompt listo para Implementador FE.
 
-## Implementador - Generador de Codigo y Prompts para Codex
-Objetivo: convertir la arquitectura en codigo o en prompts para Codex.
+## Implementador FE (prepara prompts para Codex FE)
+- Responsabilidades FE: convertir blueprint en codigo o en un prompt acotado para Codex FE; listar archivos exactos (chat.component, chat-full, chat.service, docs_fe), evitar mezclar BE.
+- Cuando entra: despues del Arquitecto FE.
+- Handoff: codigo listo o prompt listo para Codex FE.
 
-### Prompt para generar codigo:
-"Actua como Implementador. Basado en esta arquitectura, genera codigo completo para los archivos: [lista].
-Devolve los archivos completos, sin TODOs ni comentarios basura."
+## Codex FE
+- Responsabilidades FE: aplicar cambios en archivos indicados (componentes, servicios, docs_fe), mantener polling 8000 ms, limits DEFAULT/FILTER, unread, scroll, quota_exceeded; no tocar backend ni rutas fuera de alcance.
+- Cuando entra: ejecuta el prompt del Implementador FE.
+- Handoff: diffs claros para QA/Debugger.
 
-### Prompt para generar prompts Codex:
-"Actua como Implementador especializado en preparar prompts para Codex.
-Quiero hacer este cambio: [describir cambio].
-Genera:
-- Prompt para Codex FE
-- Prompt para Codex BE
-Cada uno debe indicar:
-- Archivos a tocar
-- Objetivo
-- Que NO tocar
-- Cambios moderados
-- Entrega en diffs/snippets claros."
+## QA/Debugger
+- Responsabilidades FE: revisar hallazgos, riesgos, regresiones (chat widget/full, unread, filtros, scroll, docs actualizadas), sugerir fixes pequenos.
+- Cuando entra: despues de Codex FE o cuando se detecta bug.
+- Handoff: hallazgos + prompt(s) de fix para Implementador FE/Codex FE.
 
 ---
-
-## Debugger / QA - Revisor
-Objetivo: encontrar problemas y sugerir mejoras.
-"Actua como QA/Debugger. Dame hallazgos priorizados y riesgos."
-
----
-
-# 2. Reglas Generales para la IA
+# 2. Reglas Generales para la IA (FE)
 - No inventar archivos ni rutas: si no existe, decir "NO ENCONTRADO".
-- Mantener cambios minimos y claros; usar diffs/snippets.
-- Validar parametros y datos; no suponer.
-- Evitar cambios en frontend si el pedido es backend, y viceversa.
+- Cambios minimos y claros; usar diffs/snippets.
+- Validar parametros/datos; no suponer.
+- Mantener separacion FE/BE.
 - Documentar supuestos y riesgos cuando algo no este claro.
 
 ---
-
-# 3. Flujo de Trabajo Recomendado
-
-Proceso ideal para cambios grandes o complejos:
-1. PM: definimos objetivo y tareas
-2. Arquitecto: definimos como se resuelve
-3. Implementador: generamos cambios o prompts Codex
-4. Codex: aplica cambios en FE o BE
-5. Debugger: revisa que este todo bien
-6. Prueba real en tu maquina
-7. Iteracion con cambios pequenos
+# 3. Flujo de Trabajo Recomendado (FE)
+1) Coordinador define objetivo.
+2) PM: plan + prompt para Arquitecto FE.
+3) Arquitecto FE: blueprint + prompt para Implementador FE.
+4) Implementador FE: codigo o prompt para Codex FE.
+5) Codex FE: aplica cambios (solo FE).
+6) QA/Debugger: revisa y propone fixes.
+7) Pruebas rapidas (ng serve) y actualizacion de docs en `/docs_fe`.
 
 ---
-
 # 4. Ventajas del Sistema
-- Trabajo mas limpio y ordenado
-- Cambios chicos y verificables
-- Menos errores y menos tiempo perdido
-- Documentacion automatica
-- Codex recibe prompts mas claros -> resultados mas precisos
-- Evita cambios gigantes que rompen todo
+- Trabajo ordenado y verificable.
+- Cambios chicos y seguros.
+- Documentacion sincronizada.
+- Prompts claros -> mejores resultados en Codex FE.
 
 ---
-
 # 5. Como empezar cada dia
-En una nueva conversacion de ChatGPT, pega esto:
-"Quiero trabajar usando el sistema de agentes.
-Este es mi proyecto: [pegar resumen del proyecto actual].
-Arranquemos con el agente PM para planificar la tarea del dia: [objetivo]."
+En una nueva conversacion:
+"Quiero trabajar usando el sistema de agentes (solo FE Angular).
+Arranquemos con el PM para planificar: [objetivo]."
 
 ---
-
 # 6. Notas para el Futuro
-- Este documento puede ampliarse a medida que agreguemos Ionic, test unitarios o despliegue.
-- Podes agregar roles extra (por ejemplo: Disenador UI/UX).
+- Se puede ampliar a Ionic, tests, despliegue.
+- Se pueden agregar roles extra (Disenador UI/UX, SRE).

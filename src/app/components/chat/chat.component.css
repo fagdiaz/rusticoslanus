@@ -185,6 +185,18 @@
   flex-direction: column;
   gap: 6px;
 }
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 400px;
+  padding: 10px;
+}
 
 .mensaje-wrapper {
   width: 100%;
@@ -285,4 +297,19 @@
   margin-top: 0;
   height: 0;
   overflow: hidden;
+}
+
+/* === Unread badge === */
+
+.unread {
+  font-weight: 700;
+}
+
+.badge-unread {
+  background: #ff5252;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 11px;
+  margin-left: 4px;
 }

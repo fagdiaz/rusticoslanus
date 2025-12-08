@@ -20,8 +20,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   usuarios: Usuario[] = [];
   destinatarioSeleccionado: Usuario | null = null;
   conversaciones: ConversacionResumen[] = [];
+  unreadMap: { [chatId: string]: number } = {};
+  quotaExcedida = false;
+  private convSub?: Subscription;
+  private msgSub?: Subscription;
+  private quotaSub?: Subscription;
 
-  refrescoInterval?: any;
   roleSub?: Subscription;
   rolActual: string | null = null;
 
@@ -44,17 +48,33 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
 
     this.cargarUsuarios();
-    this.cargarConversaciones();
 
-    this.refrescoInterval = setInterval(() => this.refrescarMensajesSinSpinner(), 1000);
+    if (this.uidActual) {
+      this.chatService.startConversationsPolling(this.uidActual);
+    }
+
+    this.convSub = this.chatService.conversationsWithUnread$.subscribe((convs) => {
+      this.conversaciones = convs || [];
+    });
+
+    this.msgSub = this.chatService.messages$.subscribe((msgs) => {
+      this.mensajes = msgs || [];
+      this.isLoading = false;
+      this.scrollToBottom();
+    });
+
+    this.quotaSub = this.chatService.quotaExceeded$.subscribe((flag) => {
+      this.quotaExcedida = flag;
+    });
   }
 
   ngOnDestroy(): void {
-    if (this.refrescoInterval) {
-      clearInterval(this.refrescoInterval);
-    }
-
+    this.chatService.stopConversationsPolling();
+    this.chatService.stopMessagesPolling();
     this.roleSub?.unsubscribe();
+    this.convSub?.unsubscribe();
+    this.msgSub?.unsubscribe();
+    this.quotaSub?.unsubscribe();
   }
 
   getUsuariosFiltrados(): Usuario[] {
@@ -81,48 +101,29 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (!u || !u.uid) return;
     this.destinatarioSeleccionado = u;
     this.mensajes = []; // limpiar mensajes al cambiar de conversación
-    this.cargarMensajes();
+    if (this.uidActual) {
+      this.isLoading = true;
+      this.chatService.markChatAsReadAndRefresh(this.uidActual, this.destinatarioSeleccionado.uid);
+      this.chatService.startMessagesPolling(this.uidActual, this.destinatarioSeleccionado.uid, 100);
+    }
+    this.handleFiltro();
   }
 
   cargarMensajes(): void {
     // No llamar al backend si faltan uids
     if (!this.uidActual || !this.destinatarioSeleccionado?.uid) return;
+    if (this.quotaExcedida) return;
 
     this.isLoading = true;
-
-    this.chatService
-      .getMessages(this.uidActual!, this.destinatarioSeleccionado!.uid, 100)
-      .subscribe({
-        next: (msgs) => {
-          this.mensajes = msgs;
-          this.isLoading = false;
-          this.scrollToBottom();
-        },
-        error: () => {
-          this.isLoading = false;
-        }
-      });
+    this.chatService.startMessagesPolling(this.uidActual, this.destinatarioSeleccionado.uid, 100);
   }
 
   refrescarMensajesSinSpinner(): void {
     // No refrescar sin uids válidos
     if (!this.uidActual || !this.destinatarioSeleccionado?.uid) return;
+    if (this.quotaExcedida) return;
 
-    this.chatService
-      .getMessages(this.uidActual!, this.destinatarioSeleccionado!.uid, 100)
-      .subscribe({
-        next: (msgs) => {
-          const lastLocalId = this.mensajes[this.mensajes.length - 1]?.id;
-          const lastRemoteId = msgs[msgs.length - 1]?.id;
-          if (msgs.length !== this.mensajes.length || lastLocalId !== lastRemoteId) {
-            this.mensajes = msgs;
-            this.scrollToBottom();
-          }
-        },
-        error: (err) => {
-          console.error('Error refrescar mensajes', err);
-        }
-      });
+    this.chatService.startMessagesPolling(this.uidActual!, this.destinatarioSeleccionado!.uid, 100);
   }
 
   enviarMensaje(): void {
@@ -140,7 +141,10 @@ export class ChatComponent implements OnInit, OnDestroy {
         next: () => {
           this.mensajeNuevo = '';
           this.refrescarMensajesSinSpinner();
-          this.cargarConversaciones(); // actualiza lista de conversaciones
+          if (this.uidActual && this.destinatarioSeleccionado?.uid) {
+            this.chatService.refreshMessagesOnce(this.uidActual, this.destinatarioSeleccionado.uid);
+            this.chatService.refreshUnreadOnce(this.uidActual);
+          }
         },
         error: (err) => console.error('Error al enviar mensaje', err)
       });
@@ -169,20 +173,39 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   private cargarConversaciones(): void {
-    if (!this.uidActual) {
-      console.warn('cargarConversaciones: no hay uidActual');
-      return;
-    }
+    // se usa polling centralizado en ChatService
+  }
 
-    this.chatService.getConversations(this.uidActual, 50).subscribe({
-      next: (convs) => {
-        this.conversaciones = convs || [];
-        console.log('Conversaciones cargadas:', this.conversaciones);
-      },
-      error: (err) => {
-        console.error('Error al obtener conversaciones', err);
+  private refrescarConversaciones(): void {
+    // Polling centralizado en ChatService
+  }
+
+  private actualizarConversaciones(convs: ConversacionResumen[]): void {
+    const existentesMap = new Map(this.conversaciones.map((c) => [c.chatId, c]));
+    const vistos = new Set<string>();
+
+    convs.forEach((conv) => {
+      const existente = existentesMap.get(conv.chatId);
+      if (existente) {
+        existente.uidOtro = conv.uidOtro;
+        existente.emailOtro = conv.emailOtro;
+        existente.ultimoMensaje = conv.ultimoMensaje;
+        existente.timestamp = conv.timestamp;
+        existente.unread = this.unreadMap[conv.chatId] || existente.unread || 0;
+      } else {
+        this.conversaciones.push({
+          ...conv,
+          unread: this.unreadMap[conv.chatId] || 0
+        });
       }
+      vistos.add(conv.chatId);
     });
+
+    for (let i = this.conversaciones.length - 1; i >= 0; i--) {
+      if (!vistos.has(this.conversaciones[i].chatId)) {
+        this.conversaciones.splice(i, 1);
+      }
+    }
   }
 
   private autoSeleccionarDestinatario(): void {
@@ -197,6 +220,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
       if (soporte && (cambio || !this.mensajes.length)) {
         this.mensajes = []; // limpiar al cambiar de conversación
+        if (this.uidActual) {
+          this.chatService.markChatAsReadAndRefresh(this.uidActual, soporte.uid);
+        }
         this.cargarMensajes();
       } else if (!soporte) {
         this.mensajes = [];
@@ -222,5 +248,36 @@ export class ChatComponent implements OnInit, OnDestroy {
       } as Usuario);
 
     this.onSeleccionDestinatario(usuario);
+  }
+
+  trackByChatId(_index: number, conv: ConversacionResumen): string {
+    return conv.chatId;
+  }
+
+  trackByMsgId(_index: number, msg: MensajeChat): string {
+    return msg.id;
+  }
+
+  private handleQuotaError(err: any): boolean {
+    if (err?.quotaExceeded) {
+      console.warn('ChatComponent: cuota excedida, deteniendo auto-refresh');
+      this.quotaExcedida = true;
+      return true;
+    }
+    return false;
+  }
+
+  onFiltroTextoChange(): void {
+    this.handleFiltro();
+  }
+
+  private handleFiltro(): void {
+    if (!this.destinatarioSeleccionado?.uid || !this.uidActual) return;
+    const texto = this.filtroTexto?.trim();
+    if (texto) {
+      this.chatService.activarFiltro(this.uidActual, this.destinatarioSeleccionado.uid, texto);
+    } else {
+      this.chatService.desactivarFiltro(this.uidActual, this.destinatarioSeleccionado.uid);
+    }
   }
 }
