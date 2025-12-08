@@ -18,12 +18,22 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.chatService.initGlobalUnreadPolling();
-    this.authService.user$
-      .pipe(
-        filter((u): u is any => !!u && !!(u as any).uid),
-        take(1)
-      )
-      .subscribe((u) => this.chatService.refreshUnreadOnce((u as any).uid));
+    const currentUid = this.authService.getCurrentUser()?.uid;
+    if (currentUid) {
+      this.chatService.startPolling(currentUid);
+      this.chatService.refreshUnreadOnce(currentUid);
+    } else {
+      this.authService.user$
+        .pipe(
+          filter((u): u is any => !!u && !!(u as any).uid),
+          take(1)
+        )
+        .subscribe((u) => {
+          const uid = (u as any).uid;
+          this.chatService.startPolling(uid);
+          this.chatService.refreshUnreadOnce(uid);
+        });
+    }
   }
 
   toggleChat(): void {

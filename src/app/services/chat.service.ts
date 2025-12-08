@@ -5,6 +5,7 @@ import { catchError, map, switchMap, startWith, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 const REFRESH_INTERVAL_MS = 8000;
+const GLOBAL_UNREAD_INTERVAL_MS = 40000;
 const DEFAULT_CHAT_LIMIT = 10;
 const FILTER_CHAT_LIMIT = 200;
 
@@ -55,7 +56,7 @@ export class ChatService {
   conversationsWithUnread$ = combineLatest([this.conversationsSubject.asObservable(), this.unreadSubject.asObservable()]).pipe(
     map(([convs, unread]) => convs.map(conv => ({ ...conv, unread: unread[conv.chatId] ?? 0 })))
   );
-  unreadConversationsCount$ = this.unreadSubject.asObservable().pipe(
+  unreadConversationsCount$ = this.unreadByChatId$.pipe(
     map((unreadMap) => {
       if (!unreadMap) return 0;
       return Object.values(unreadMap).filter(v => (v || 0) > 0).length;
@@ -217,6 +218,15 @@ export class ChatService {
       if (document.hidden || this.quotaExceededSubject.value) return;
       this.fetchMessagesOnce(uidActual, uidOtro, effectiveLimit);
     }, REFRESH_INTERVAL_MS);
+  }
+
+  /**
+   * Inicia el polling de conversaciones + unread para un usuario.
+   * Reutiliza el mismo intervalo de startConversationsPolling.
+   */
+  startPolling(uidActual: string): void {
+    if (!uidActual || this.quotaExceededSubject.value) return;
+    this.startConversationsPolling(uidActual);
   }
 
   refreshMessagesOnce(uidActual: string, uidOtro: string): void {
@@ -413,9 +423,9 @@ export class ChatService {
       switchMap((user) => {
         const uid = (user as any)?.uid;
         if (!uid) return EMPTY;
-        return interval(40000).pipe(
+        return interval(GLOBAL_UNREAD_INTERVAL_MS).pipe(
           startWith(0),
-          tap(() => this.refreshUnreadOnce(uid))
+          tap(() => this.fetchUnreadOnce(uid, 'poll'))
         );
       })
     ).subscribe();

@@ -41,7 +41,7 @@ Frontend en Angular acoplado a backend Node/Express + Firestore. Vistas principa
 - Polling centralizado en `chat.service.ts` cada 8000 ms: `/chat/conversaciones` + `/chat/unread` -> `conversations$` con unread mergeado.
 - Mensajes por chatId con `messages$` y limites: DEFAULT_CHAT_LIMIT=10, FILTER_CHAT_LIMIT=200 (modo filtro); scroll interno en widget y full.
 - Manejo de cuota: ante 503 quota_exceeded se expone flag (`quotaExcedida$`) y se detiene polling; mensaje en header y en chat.
-- Unread y mensajes: refresco inmediato al abrir/enviar; pendiente QA/UX para validar que baja unread en todos los flujos.
+- Unread y mensajes: refresco inmediato al abrir/enviar; validado en QA que el unread baja a 0 y se mantiene.
 - Envio/recepcion funcional; scroll interno en widget y full.
 - Pendientes: ajustar UX de input inferior y mensaje vacio; minimizar parpadeos.
 

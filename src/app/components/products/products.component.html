@@ -1,69 +1,63 @@
-<p>products works!</p>
-
-<!--  <div class="row">
-    <div class="col-sm col-xs-12">
-        <div class="row">
-            <input type="text" [(ngModel)]="busqueda">
-        </div>
-        <div class="row">
-            <div *ngFor="let prod of this.products|filtroProduct :busqueda "   class="col-4">
-                <app-product  [myProduct]="prod"></app-product>
-            </div>
-        </div>                
-    </div>
+<div *ngIf="loading">Cargando productos...</div>
+<div *ngIf="!loading && error" class="error">{{ error }}</div>
+<div *ngIf="!loading && !error && Products.length === 0">
+  No hay productos cargados.
 </div>
--->
 
-<mat-card>
-    <a mat-button color="primary" class="add-button" routerLink="/addproduct">Añadir producto nuevo</a>
+<mat-card *ngIf="!loading && !error && Products.length > 0">
+  <a
+    *ngIf="rolActual === 'admin'"
+    mat-button
+    color="primary"
+    class="add-button"
+    routerLink="/addproduct"
+  >
+    Añadir producto nuevo
+  </a>
 
-
-    <div class="product-grid">
-        <mat-card *ngFor="let product of Products" class="product-card">
-            <div class="product-content">
-
-                <div class="product-info">
-                    <!-- Título -->
-                    <table>
-                        <tr>
-                            <!-- Columna 1: Nombre -->
-
-                            <td>
-                                <h2>{{ product.nombre }} </h2>
-                            </td>
-                            <!-- Columna 2: Botón "Edit" -->
-                            <td >
-                                <div class="edit-button">
-                                    <button mat-icon-button >
-                                        <mat-icon>edit</mat-icon>
-                                    </button>
-                                </div>
-                            </td>
-                            <!-- Columna 3: Botón "Delete" -->
-                            <td>
-                                <div class="delete-button">
-                                    <button mat-icon-button >
-                                        <mat-icon>delete</mat-icon>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <!-- Descripción y Precio -->
-                    <p class="description">Descripción: {{ product.descripcion }}</p>
-                    <p>Precio: ${{ product.precio }}</p>
-                </div>
-
-                <!-- Botón "Añadir al carrito" en el margen inferior -->
-                <div class="add-to-cart-button">
-                    <button mat-button color="primary" (click)="addProduct(product.id, product.nombre, product.descripcion, product.precio)">+</button>
-                    <input type="number" [value]="getCartItemQuantity(product.id)" name="cantidad" />
-                    <button mat-button color="primary" (click)="removeProduct(product.id)">-</button>
-                  </div>
-                  
+  <div class="product-grid">
+    <ng-container *ngFor="let product of Products">
+      <mat-card
+        *ngIf="mostrarProducto(product)"
+        class="product-card"
+        [class.inactivo]="!product.activo"
+      >
+        <div class="product-content">
+          <div class="product-info">
+            <div class="producto-header">
+              <h2>{{ product.nombre }}</h2>
+              <span
+                *ngIf="rolActual === 'admin' && product.activo === false"
+                class="badge-inactivo"
+              >
+                INACTIVO
+              </span>
             </div>
-        </mat-card>
-    </div>
 
+            <div
+              class="producto-actions"
+              *ngIf="rolActual === 'admin'"
+            >
+            <button mat-button color="primary" (click)="openEditDialog(product)">
+                Editar
+              </button>
+
+              <button mat-button color="warn" (click)="onSoftDelete(product)">
+                Eliminar
+              </button>
+            </div>
+
+            <p class="description">Descripción: {{ product.descripcion }}</p>
+            <p>Precio: ${{ product.precio }}</p>
+          </div>
+
+          <div class="add-to-cart-button">
+            <button mat-button color="primary" (click)="addProduct(product.id, product.nombre, product.descripcion, product.precio)">+</button>
+            <input type="number" [value]="getCartItemQuantity(product.id)" name="cantidad" />
+            <button mat-button color="primary" (click)="removeProduct(product.id)">-</button>
+          </div>
+        </div>
+      </mat-card>
+    </ng-container>
+  </div>
 </mat-card>

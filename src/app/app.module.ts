@@ -28,6 +28,8 @@ import { CartComponent } from './components/cart/cart.component';
 import { OrderComponent } from './components/order/order.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
@@ -85,6 +87,8 @@ export function tokenGetter() {
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    MatDialogModule,
+    MatButtonModule,
     MatSelectModule,
     MatOptionModule,
     JwtModule.forRoot({

@@ -1,54 +1,67 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+export interface Product {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  precio: number | string;
+  activo?: boolean;
+  imagenUrl?: string;
+  categoria?: string;
+  orden?: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductsService {
-  /*
-   private products:Product[]; 
-    getProduct():Product[]{
-      return this.products;
-    }
-    deleteUser():void{
-      this.products.pop();
-    }
-  
-    constructor() { 
-                                                                                                                                  
-    this.products = [];
-    this.products.push(<Product>{
-      marca:'Nique',
-      nombre:'coleccion 2022',
-      precio: 596,
-      stock:30,
-      tipoPrenda :TipoPrenda.remera  
-    });
-    this.products.push(<Product>{marca:'Adiddas',nombre:'lisa',precio: 1596,stock:15, tipoPrenda :TipoPrenda.remera  });
-    this.products.push(<Product>{marca:'Levis',nombre:'coleccion 2022',precio: 896,stock:20, tipoPrenda :TipoPrenda.pantalon  });
-    this.products.push(<Product>{marca:'Puma',nombre:'lisa',precio: 996,stock:18, tipoPrenda :TipoPrenda.buzo  });
-    this.products.push(<Product>{marca:'Nique',nombre:'estampas',precio: 1206,stock:9, tipoPrenda :TipoPrenda.pantalon  });
-    this.products.push(<Product>{marca:'Puma',nombre:'Messi',precio: 2096,stock:13, tipoPrenda :TipoPrenda.buzo  });
-  
-    }
-  
-    has(){
-      
-    }
-    */
+  private readonly baseUrl = 'http://127.0.0.1:3000';
 
-  constructor(private http: HttpClient) {
-    this.http = http;
+  constructor(private http: HttpClient) {}
+
+  getProducts(uidActual: string): Observable<Product[]> {
+    console.log('[FE ProductsService] getProducts uidActual:', uidActual);
+    const params = new HttpParams().set('uidActual', uidActual);
+    return this.http.get<Product[]>(`${this.baseUrl}/products`, { params });
   }
 
-  getProducts() {
-    return this.http.get('http://127.0.0.1:3000/productos');
+  addProduct(productData: any): Observable<any> {
+    // Ajusta la URL si tu backend usa otra ruta para crear productos
+    return this.http.post<any>(`${this.baseUrl}/productos`, productData);
   }
 
-  addProduct(product:any){
-    console.log("LLEGO AL SERVICIO", product)
-    return this.http.post("http://127.0.0.1:3000/productos", {product})
+  updateProduct(uidActual: string, producto: Product): Observable<Product> {
+    const body = { uidActual, producto };
+
+    return this.http
+      .post<{ res: string; producto: Product }>(
+        `${this.baseUrl}/products/update`,
+        body
+      )
+      .pipe(
+        map((resp) => {
+          console.log('[FE ProductsService] updateProduct resp:', resp);
+          return resp.producto;
+        })
+      );
   }
 
+  softDeleteProduct(uidActual: string, id: string): Observable<Product> {
+    const body = { uidActual, id };
 
+    return this.http
+      .post<{ res: string; producto: Product }>(
+        `${this.baseUrl}/products/soft-delete`,
+        body
+      )
+      .pipe(
+        map((resp) => {
+          console.log('[FE ProductsService] softDeleteProduct resp:', resp);
+          return resp.producto;
+        })
+      );
+  }
 }
