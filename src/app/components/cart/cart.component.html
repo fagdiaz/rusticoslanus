@@ -2,19 +2,19 @@
 
 <div class="cart-container">
     <mat-card *ngFor="let item of cartItems; let i = index" class="cart-item">
-        <mat-card-title>{{ item.nombre }}</mat-card-title>
+        <mat-card-title>{{ item.product.nombre }}</mat-card-title>
         <mat-card-content>
-            <p>{{ item.descripcion }}</p>
-            <p>Precio: {{ item.precio }}</p>
+            <p>{{ item.product.descripcion }}</p>
+            <p>Precio: ${{ item.product.precio }}</p>
             <div class="quantity-controls">
                 <button mat-icon-button (click)="decreaseQuantity(item)">
                     <mat-icon>remove</mat-icon>
                 </button>
-                <input type="number" [value]="item.cantProd" name="cantidad" readonly>
+                <input type="number" [value]="item.quantity" name="cantidad" readonly>
                 <button mat-icon-button (click)="increaseQuantity(item)">
                     <mat-icon>add</mat-icon>
                 </button>
-                <button mat-icon-button (click)="removeItem(i)">
+                <button mat-icon-button (click)="removeItem(item)">
                     <mat-icon>delete</mat-icon>
                 </button>
             </div>

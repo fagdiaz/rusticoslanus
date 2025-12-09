@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
+import { CartService } from 'src/app/services/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -10,8 +13,16 @@ export class HeaderComponent implements OnInit {
   userName: string | null = null;
   rolActual: string | null = null;
   quotaExceeded = false;
+  isCartOpen = false;
+  cartCount$: Observable<number>;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private cartService: CartService,
+    private router: Router
+  ) {
+    this.cartCount$ = this.cartService.cartCount$;
+  }
 
   ngOnInit(): void {
     this.authService.user$.subscribe(user => {
@@ -56,5 +67,17 @@ export class HeaderComponent implements OnInit {
 
   logout(): void {
     this.authService.signout();
+  }
+
+  toggleCart(): void {
+    this.isCartOpen = !this.isCartOpen;
+  }
+
+  closeCart(): void {
+    this.isCartOpen = false;
+  }
+
+  goToUsers(): void {
+    this.router.navigate(['/users']);
   }
 }

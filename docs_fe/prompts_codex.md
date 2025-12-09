@@ -110,9 +110,8 @@ Actua como Implementador FE. Genera un prompt para Codex FE que:
 ### 10) Prompt Productos (FE)
 ```
 Actua como Implementador FE. Genera un prompt que:
-- Modifique `ProductsComponent` (ts/html/css) y `AddproductComponent` para mejorar imágenes y edición admin-only.
-- Utilice `ProductsService` sin tocar otros servicios ni rutas.
-- Mantenga reglas de roles, soft delete y lógica de carrito existentes.
-- Detalle la necesidad: mostrar `imagenUrl` con object-fit, validar `uidActual`, recargar lista tras soft delete.
-- Entregue diffs/snippets para los archivos indicados.
+- Modifique `ProductsComponent`, `AddproductComponent` (ts/html/css) y, si aplica, `CartWidgetComponent` para reforzar el modal reactivo (alta/edición), `imagenUrl`, soft delete y los controles de cantidad admin-only.
+- Use `ProductsService` y `CartService` sin tocar chat, checkout ni nuevas rutas; mantenga `MatDialog`, `updateProduct`, `softDeleteProduct`, `addProduct(product)`/`removeProduct(product)` y el widget del header como están.
+- Describe la necesidad: el header muestra un badge `cartCount$`, el widget despliega subtotal y controles +/−, las cards sólo renders activos para operadores/clientes y el admin ve botón de alta, edición y eliminación con badge INACTIVO.
+- Solicita diffs/snippets precisos sobre los archivos en scope y asegura que `/cart` y `/checkout` siguen sincronizados con el servicio del carrito.
 ```

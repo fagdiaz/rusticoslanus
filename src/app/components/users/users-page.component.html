@@ -1,0 +1,84 @@
+<div class="users-page">
+  <header class="users-page__header">
+    <h2>Control de usuarios</h2>
+    <div class="filters">
+      <input
+        type="text"
+        placeholder="Buscar por email o nombre"
+        [(ngModel)]="filtroTexto"
+      />
+      <select [(ngModel)]="filtroRol">
+        <option value="">Todos los roles</option>
+        <option value="admin">Admin</option>
+        <option value="operador">Operador</option>
+        <option value="cliente">Cliente</option>
+      </select>
+      <select [(ngModel)]="filtroEstado">
+        <option value="">Todos los estados</option>
+        <option value="activos">Activos</option>
+        <option value="inactivos">Inactivos</option>
+      </select>
+      <div class="filters__actions">
+        <button type="button" (click)="aplicarFiltros()">Aplicar</button>
+        <button type="button" (click)="limpiarFiltros()">Limpiar</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="users-page__body">
+    <div *ngIf="loading" class="users-page__status">Cargando usuarios...</div>
+    <div *ngIf="error" class="users-page__error">{{ error }}</div>
+
+    <table *ngIf="!loading && usuarios.length" class="users-table">
+      <thead>
+        <tr>
+          <th>UID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Activo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of usuarios">
+          <td>{{ user.uid }}</td>
+          <td>{{ user.displayName || 'Sin nombre' }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+          <select #rolSelect [value]="user.rol" (change)="onRolChange(user, rolSelect.value)">
+              <option value="admin">Admin</option>
+              <option value="operador">Operador</option>
+              <option value="cliente">Cliente</option>
+            </select>
+          </td>
+          <td class="estado-cell">
+            <span
+              *ngIf="user.activo"
+              class="estado-label estado-activo"
+            >
+              Usuario activado
+            </span>
+            <span
+              *ngIf="!user.activo"
+              class="estado-label estado-inactivo"
+            >
+              Usuario desactivado
+            </span>
+
+            <button
+              type="button"
+              class="estado-btn"
+              (click)="onActivoToggle(user)"
+            >
+              {{ user.activo ? 'Desactivar' : 'Activar' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!loading && !usuarios.length" class="users-page__empty">
+      No hay usuarios para mostrar.
+    </div>
+  </section>
+</div>

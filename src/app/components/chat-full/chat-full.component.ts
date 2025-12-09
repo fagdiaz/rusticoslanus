@@ -45,19 +45,18 @@ export class ChatFullComponent implements OnInit, OnDestroy {
 
     if (this.uidActual) {
       this.cargarUsuarios();
-      this.chatService.startConversationsPolling(this.uidActual);
       this.convSub = this.chatService.conversationsWithUnread$.subscribe((convs) => {
         this.conversaciones = convs || [];
       });
-        this.msgSub = this.chatService.messages$.subscribe((msgs) => {
-          this.mensajes = msgs || [];
-          this.isLoading = false;
-          this.scrollToBottom();
-        });
-        this.quotaSub = this.chatService.quotaExceeded$.subscribe((flag) => {
-          this.quotaExcedida = flag;
-        });
-      }
+      this.msgSub = this.chatService.messages$.subscribe((msgs) => {
+        this.mensajes = msgs || [];
+        this.isLoading = false;
+        this.scrollToBottom();
+      });
+      this.quotaSub = this.chatService.quotaExceeded$.subscribe((flag) => {
+        this.quotaExcedida = flag;
+      });
+    }
     });
 
     this.roleSub = this.authService.role$.subscribe((role) => {
@@ -68,7 +67,6 @@ export class ChatFullComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.roleSub?.unsubscribe();
-    this.chatService.stopConversationsPolling();
     this.chatService.stopMessagesPolling();
     this.convSub?.unsubscribe();
     this.msgSub?.unsubscribe();

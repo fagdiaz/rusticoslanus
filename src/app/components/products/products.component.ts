@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { filter, take } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 import { ProductsService, Product } from 'src/app/services/products.service';
+import { CartService } from 'src/app/services/cart.service';
 import { AddproductComponent } from './addproduct/addproduct.component';
 
 @Component({
@@ -13,7 +14,6 @@ import { AddproductComponent } from './addproduct/addproduct.component';
 
 export class ProductsComponent implements OnInit {
   public Products: Product[] = [];
-  public carrito: any[] = [];
   loading = true;
   error?: string;
   rolActual: string | null = null;
@@ -22,7 +22,8 @@ export class ProductsComponent implements OnInit {
   constructor(
     private productsService: ProductsService,
     private authService: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -36,7 +37,6 @@ export class ProductsComponent implements OnInit {
       console.log('[FE /products] rolActual stream:', this.rolActual);
     });
     this.rolActual = this.authService.currentRole || null;
-    this.cargarCarritoDesdeLocalStorage();
 
     const currentUser = this.authService.getCurrentUser?.();
     if (currentUser && currentUser.uid) {
@@ -74,14 +74,6 @@ export class ProductsComponent implements OnInit {
       });
   }
 
-  private cargarCarritoDesdeLocalStorage(): void {
-    const localStorageCarrito = localStorage.getItem('carrito');
-    if (localStorageCarrito !== null) {
-      this.carrito = JSON.parse(localStorageCarrito);
-      console.log('[FE /products] carrito cargado', this.carrito);
-    }
-  }
-
   private cargarProductos(uidActual: string): void {
     console.log('[FE /products] cargarProductos con uidActual:', uidActual);
     this.uidActual = uidActual;
@@ -101,52 +93,25 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  addProduct(id: any, nombre: string, descripcion: string, precio: number | string): void {
-    const precioNumber = typeof precio === 'string' ? Number(precio) : precio;
-    // Cargar carrito desde el almacenamiento local
-    this.carrito = JSON.parse(localStorage.getItem("carrito") || '[]');
-
-    // Buscar si el producto ya está en el carrito
-    const index = this.carrito.findIndex((prod: any) => prod.idProducto === id);
-
-    if (index !== -1) {
-      // Incrementar la cantidad si el producto ya está en el carrito
-      this.carrito[index].precio = precioNumber;
-      this.carrito[index].cantProd += 1;
-    } else {
-      // Agregar el producto al carrito con cantidad 1
-      const prodToCart = { idProducto: id, nombre, descripcion, precio: precioNumber, cantProd: 1 };
-      this.carrito.push(prodToCart);
+  addProduct(product: Product): void {
+    if (!product.id) {
+      return;
     }
-
-    // Guardar el carrito actualizado en el almacenamiento local
-    localStorage.setItem("carrito", JSON.stringify(this.carrito));
+    this.cartService.addItem(product);
   }
 
-  removeProduct(id: any): void {
-    // Cargar carrito desde el almacenamiento local
-    this.carrito = JSON.parse(localStorage.getItem("carrito") || '[]');
-
-    // Buscar si el producto está en el carrito
-    const index = this.carrito.findIndex((prod: any) => prod.idProducto === id);
-
-    if (index !== -1) {
-      // Reducir la cantidad del producto o eliminarlo si solo hay 1
-      if (this.carrito[index].cantProd > 1) {
-        this.carrito[index].cantProd -= 1;
-      } else {
-        this.carrito.splice(index, 1);
-      }
-
-      // Actualizar el carrito en el almacenamiento local
-      localStorage.setItem("carrito", JSON.stringify(this.carrito));
+  removeProduct(product: Product): void {
+    if (!product.id) {
+      return;
     }
+    this.cartService.decrementItem(product.id);
   }
 
-  getCartItemQuantity(productId: any): number {
-    // Obtener la cantidad de un producto en el carrito
-    const itemInCart = this.carrito.find(item => item.idProducto === productId);
-    return itemInCart ? itemInCart.cantProd : 0;
+  getCartItemQuantity(productId: string | undefined): number {
+    if (!productId) {
+      return 0;
+    }
+    return this.cartService.getQuantity(productId);
   }
 
   mostrarProducto(p: Product): boolean {

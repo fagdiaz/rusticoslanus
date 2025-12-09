@@ -1,4 +1,5 @@
-<div class="toolbar" role="banner">
+<div class="toolbar-container">
+  <div class="toolbar" role="banner">
 
     <img routerLink="home" width="100" alt="Rusticos Logo" src="../assets/img/logo.png" />
 
@@ -22,7 +23,6 @@
 
     <!-- Cuenta -->
     <span *ngIf="userName" style="color: white; margin-right: 10px;"> Hola, {{ userName }}</span>
-    <span *ngIf="rolActual" style="color: white; margin-right: 10px;">Rol: {{ rolActual }}</span>
     <span *ngIf="quotaExceeded" style="color: #ffd54f; margin-right: 10px; font-size: 13px;">
       Servicio no disponible (limite de Firestore). Intentalo mas tarde.
     </span>
@@ -34,6 +34,13 @@
     <mat-menu #menu="matMenu">
         <button routerLink="account" mat-menu-item>Cuenta</button>
         <button mat-menu-item>Configuración</button>
+        <button
+          mat-menu-item
+          *ngIf="isAdmin()"
+          (click)="goToUsers()"
+        >
+          Control de usuarios
+        </button>
         <button mat-menu-item (click)="logout()" *ngIf="checkIsauthenticated">
             Cerrar Sesión
         </button>
@@ -53,8 +60,22 @@
     </a>
 
     <!-- Carrito -->
-    <button mat-icon-button title="Carrito de Compra" style="color: white;" [routerLink]="['/cart']">
-        <mat-icon style="margin-right: 10px;">shopping_cart</mat-icon>
-    </button>
+    <div class="cart-wrapper">
+      <button
+        mat-icon-button
+        title="Carrito de Compra"
+        style="color: white;"
+        type="button"
+        (click)="toggleCart()"
+      >
+        <mat-icon>shopping_cart</mat-icon>
+        <span class="cart-count" *ngIf="cartCount$ | async as count">{{ count }}</span>
+      </button>
+    </div>
 
+</div>
+
+  <div class="cart-overlay" *ngIf="isCartOpen">
+    <app-cart-widget (close)="closeCart()"></app-cart-widget>
+  </div>
 </div>

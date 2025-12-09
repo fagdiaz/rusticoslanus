@@ -29,14 +29,21 @@ Frontend en Angular acoplado a backend Node/Express + Firestore. Vistas principa
 - En progreso: filtro por email/nombre/rol, datos adicionales.
 
 ### 2.4 ProductosComponent
-- Listado de productos desde backend.
-- Pendiente: carrusel, stock visible, mejora de estilo.
+- `ProductsComponent` mantiene `rolActual` desde `AuthService.role$` y espera a que `AuthService.user$` entregue un `uid` válido antes de llamar a `cargarProductos(uidActual)` y poblar `Products: Product[]`.
+- La plantilla usa el `CartService` como fuente única del carrito: `addProduct(product)` / `removeProduct(product)` delegan en el servicio, `getCartItemQuantity(product.id)` refleja la cantidad actual y el `cartCount$` del badge del header se mantiene sincronizado con el widget flotante del carrito.
+- El renderizado es role-aware: el admin ve el botón “Añadir producto nuevo”, los controles “Editar”/“Eliminar” y el badge “INACTIVO” cuando `product.activo === false`, mientras que operadores/clientes solo ven cards con `activo !== false` gracias a `mostrarProducto(producto)`.
+- Abrir la edición ejecuta `MatDialog` con `AddproductComponent`; al cerrar con `result === 'updated'` se vuelve a cargar la lista (`cargarProductos(uidActual)`).
+
 ### 2.5 Módulo Productos (FE)
-- **Flujo principal**: `ProductsComponent` espera al usuario actual (`authService.user$` o `getCurrentUser()`), suscribe `role$` y cuando obtiene `uidActual` llama a `ProductsService.getProducts(uidActual)` para poblar `Products: Product[]`. El carrito viene de `localStorage` e interactúa con `addProduct` / `removeProduct` sin tocar el backend.
-- **Reglas de visibilidad**: `rolActual` controla qué se muestra. El admin ve todos los productos (activos e inactivos), el botón “Añadir producto nuevo”, los controles “Editar”/“Eliminar” y el badge “INACTIVO”. Operadores/clientes sólo ven productos con `activo !== false` y no tienen botones de gestión.
-- **Productos con imagen**: cada card lee `imagenUrl` (si existe) y lo pinta con `object-fit: cover` dentro de un alto fijo (180px) para mantener la proporción sin deformar la tarjeta. Las imágenes llenan el ancho y tienen `border-radius` para respetar el card.
-- **Soft delete / edición**: `ProductsComponent.onSoftDelete` hace validaciones defensivas y llama a `softDeleteProduct(uidActual, id)` para marcar `activo:false` y recargar la lista. La edición reutiliza `AddproductComponent` dentro de un `MatDialog`, rellena el formulario con los datos y llama a `updateProduct` con el payload normalizado incluyendo `imagenUrl`.
-- El módulo Productos convive con el resto del FE sin tocar la lógica del chat ni los servicios de usuarios/pedidos; la documentación del chat sigue siendo válida como está.
+- **ProductsService** expone los endpoints clave del backend:
+  - `getProducts(uidActual: string)` → GET `/products` con `uidActual` en query params.
+  - `addProduct(productData)` → POST `/productos` (admin-only).
+  - `updateProduct(uidActual, producto)` → POST `/products/update` con `{ uidActual, producto }`.
+  - `softDeleteProduct(uidActual, id)` → POST `/products/soft-delete`, marcando `activo:false`.
+- **AddproductComponent** reutiliza un formulario reactivo para alta y edición. Recibe el `producto` editado mediante `MAT_DIALOG_DATA`, activa `isEditMode`, precarga `nombre`, `descripcion`, `precio` e `imagenUrl`, y en `onSubmit()` construye el payload adecuado para llamar a `updateProduct` o `addProduct`, emitiendo `onDone` para que el padre reconfirme la lista.
+- **Soft delete y validaciones**: `onSoftDelete` valida `uidActual` y `product.id`, solicita confirmación, y tras el OK del backend vuelve a cargar `Products` para que los clientes no vean los productos marcados como inactivos.
+- **Imágenes en cards**: cada card pinta `product.imagenUrl` dentro de un wrapper con alto fijo (~180px), `border-radius` y `object-fit: cover`, manteniendo proporciones y evitando deformaciones. Si no hay URL, la card mantiene su layout textual sin romper.
+- El módulo convive con el resto del frontend: el chat sigue siendo independiente con su polling/unread y la documentación de chat permanece válida, mientras Productos se concentra en la gestión de alta, edición y control de activos por rol.
 
 ### 2.5 PedidosComponent
 - Listado de pedidos por usuario/rol.

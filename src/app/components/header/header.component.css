@@ -8,6 +8,11 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.toolbar-container {
+    position: relative;
+    width: 100%;
+}
+
 .toolbar {
     top: 0;
     left: 0;
@@ -18,6 +23,8 @@
     background-color: #393E46;
     color: #ffffff;
     font-weight: 600;
+    position: relative;
+    padding: 0 16px;
 }
 
 .toolbar img {
@@ -30,5 +37,36 @@
 
 .menuspacer {
     flex: 0.5;
+}
+
+.cart-wrapper {
+  position: relative;
+  margin-right: 16px;
+}
+
+.cart-overlay {
+  position: absolute;
+  top: 64px;
+  right: 16px;
+  z-index: 1200;
+  max-width: 90vw;
+  width: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cart-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -20%);
+  background: #ff5252;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
 }
 

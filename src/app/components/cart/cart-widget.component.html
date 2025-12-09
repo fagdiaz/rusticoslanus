@@ -1,0 +1,59 @@
+<ng-container *ngIf="cartItems$ | async as items">
+  <div class="cart-widget" [ngClass]="{ 'multi-items': items.length > 1 }">
+    <div class="cart-widget-header">
+      <h3>Tu carrito</h3>
+      <button mat-icon-button type="button" (click)="handleClose()" aria-label="Cerrar carrito">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="cart-summary" *ngIf="items.length === 1">
+      1 producto
+    </div>
+    <div class="cart-summary" *ngIf="items.length > 1">
+      {{ items.length }} productos
+    </div>
+
+    <div class="cart-items-scroll">
+      <div *ngIf="items.length === 0" class="empty-state">
+        No hay productos en el carrito.
+      </div>
+      <div *ngFor="let item of items" class="cart-widget-item">
+        <div class="item-info">
+          <strong>{{ item.product.nombre }}</strong>
+          <span>{{ item.product.descripcion }}</span>
+        </div>
+        <div class="item-meta">
+          <span>Subtotal: ${{ getItemSubtotal(item) | number:'1.2-2' }}</span>
+        </div>
+        <div class="item-controls">
+          <div class="item-qty-controls">
+            <button mat-icon-button type="button" (click)="decrement(item)" aria-label="Restar">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span class="quantity-display">{{ item.quantity }}</span>
+            <button mat-icon-button type="button" (click)="increment(item)" aria-label="Sumar">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <button mat-button type="button" class="text-button" (click)="remove(item)">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-widget-footer">
+      <div class="total-row">
+        <span>Total</span>
+        <strong>{{ total$ | async | number:'1.2-2' }}</strong>
+      </div>
+      <div class="cart-widget-actions">
+        <button mat-button color="primary" routerLink="/products" (click)="handleClose()">
+          Añadir más productos
+        </button>
+        <button mat-raised-button color="accent" routerLink="/checkout" (click)="handleClose()">
+          Finalizar compra
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>

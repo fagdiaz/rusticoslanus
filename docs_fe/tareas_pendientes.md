@@ -25,9 +25,9 @@ Pendientes FE (rusticoslanus) con foco en chat y UX.
 ---
 ## Productos (FE)
 ### MUST
-- Ninguna deuda funcional crítica; la carga, alta/edición, imágenes y soft delete están operativas con validaciones básicas.
+- No hay deudas funcionales críticas: carga, alta/edición, imágenes, edición/soft delete y carrito funcionan; los errores se manejan con validaciones básicas y el widget queda sincronizado con `/cart`.
 
 ### NICE TO HAVE
-- Validaciones más estrictas en formulario (precio positivo, URL valida, campos obligatorios más descriptivos).
-- Mejor UI responsive para grids (breakpoints para tablets/mobiles, ajuste de márgenes).
-- Mostrar información adicional como stock, categoría u orden en cada card.
+- Validaciones extra en el formulario (precio positivo, URL válida, mensajes de error más claros).
+- Mejorar el layout responsive de las cards y del widget para tablets/móviles (márgenes, altura, breakpoints).
+- Mostrar meta datos extra (stock, categoría, orden) y reforzar el badge INACTIVO con texto explicativo.

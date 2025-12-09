@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, combineLatest, interval, EMPTY, Subscription } from 'rxjs';
-import { catchError, map, switchMap, startWith, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, combineLatest, interval, EMPTY, Subscription, timer } from 'rxjs';
+import { catchError, filter, map, switchMap, startWith, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 const REFRESH_INTERVAL_MS = 8000;
@@ -73,6 +73,10 @@ export class ChatService {
   private lastMsgPair: { uidActual: string; uidOtro: string; limit: number; chatKey: string } | null = null;
   private unreadFreshUntil = 0;
   private globalUnreadPollingSub?: Subscription;
+  private globalConversationsPollingSub?: Subscription;
+  private conversationsPollingStarted = false;
+  private conversationsPollingPaused = false;
+  private visibilityChangeHandler = this.onVisibilityChange.bind(this);
 
   constructor(
     private http: HttpClient,
@@ -180,7 +184,6 @@ export class ChatService {
 
   startConversationsPolling(uidActual: string): void {
     if (!uidActual || this.quotaExceededSubject.value) return;
-    // Evitar re-crear el intervalo si ya está corriendo para el mismo uid
     if (this.convInterval && this.lastUidActual === uidActual) {
       return;
     }
@@ -227,6 +230,36 @@ export class ChatService {
   startPolling(uidActual: string): void {
     if (!uidActual || this.quotaExceededSubject.value) return;
     this.startConversationsPolling(uidActual);
+  }
+
+  startGlobalPollingConversationsAndUnread(uidActual: string): void {
+    if (!uidActual || this.quotaExceededSubject.value) return;
+    if (this.conversationsPollingStarted) return;
+    this.conversationsPollingStarted = true;
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', this.visibilityChangeHandler);
+    }
+
+    const tick$ = timer(0, REFRESH_INTERVAL_MS).pipe(
+      filter(() => !this.conversationsPollingPaused),
+      filter(() => typeof document === 'undefined' ? true : !document.hidden),
+      filter(() => !this.quotaExceededSubject.value)
+    );
+
+    this.globalConversationsPollingSub = tick$.subscribe(() => {
+      this.fetchConversationsOnce(uidActual);
+    });
+  }
+
+  private onVisibilityChange(): void {
+    if (typeof document === 'undefined') return;
+    const wasPaused = this.conversationsPollingPaused;
+    this.conversationsPollingPaused = document.hidden;
+    if (wasPaused && !this.conversationsPollingPaused && this.lastUidActual) {
+      this.fetchConversationsOnce(this.lastUidActual);
+      this.fetchUnreadOnce(this.lastUidActual, 'poll');
+    }
   }
 
   refreshMessagesOnce(uidActual: string, uidOtro: string): void {

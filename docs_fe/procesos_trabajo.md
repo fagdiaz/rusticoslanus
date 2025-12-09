@@ -20,9 +20,9 @@ Define el flujo FE con agentes y pasos practicos. Backend (carpeta `srv`) queda 
 - Pasa prompt a Codex FE.
 
 ## 3.b Productos FE
-- Confirma que `ProductsComponent`, `AddproductComponent` y `ProductsService` siguen el patrón: rol desde `authService`, `getProducts(uidActual)` antes de render, y edición/soft delete vía dialog/modal.
-- Documenta o comunica en `docs_fe/estado_actual.md` y `docs_fe/backlog.md` los flujos actuales si se realizan cambios de producto.
-- Pruebas básicas: admin ve todos los productos y botones, cliente sólo activos; imagenes con `object-fit: cover` sin romper layout.
+- Confirma que `ProductsComponent`, `AddproductComponent`, `ProductsService` y `CartService` siguen el patrón: rol desde `authService`, `getProducts(uidActual)` antes de render, edición/Admin: `MatDialog`, y el widget del header se alimenta de `cartItems$`.
+- Documenta o comunica en `docs_fe/estado_actual.md`, `docs_fe/backlog.md` y `docs_fe/tareas_pendientes.md` los flujos que cambian en productos.
+- Pruebas básicas: admin crea/edita/soft delete (incluyendo `imagenUrl` y recarga de lista) y verifica el badge del header + `CartWidget` tras los cambios; cliente sólo ve productos activos, sin botones admin, y las cards con imagen respetan `object-fit: cover` mientras el badge INACTIVO explica el estado.
 
 ---
 ## 4. Codex FE

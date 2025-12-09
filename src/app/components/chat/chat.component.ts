@@ -49,10 +49,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.cargarUsuarios();
 
-    if (this.uidActual) {
-      this.chatService.startConversationsPolling(this.uidActual);
-    }
-
     this.convSub = this.chatService.conversationsWithUnread$.subscribe((convs) => {
       this.conversaciones = convs || [];
     });
@@ -69,7 +65,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.chatService.stopConversationsPolling();
     this.chatService.stopMessagesPolling();
     this.roleSub?.unsubscribe();
     this.convSub?.unsubscribe();

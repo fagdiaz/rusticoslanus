@@ -5,7 +5,7 @@ import { MaterialModule } from './material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 
 import { HeaderComponent } from './components/header/header.component';
@@ -25,6 +25,7 @@ import { FiltroProductPipe } from './pipes/filtro-product.pipe';
 import { ResaltarDirective } from './resaltar.directive';
 import { AddproductComponent } from './components/products/addproduct/addproduct.component';
 import { CartComponent } from './components/cart/cart.component';
+import { CartWidgetComponent } from './components/cart/cart-widget.component';
 import { OrderComponent } from './components/order/order.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,6 +41,8 @@ import { MyMessageDirective } from './directives/my-message.directive';
 import { OrdersAdminComponent } from './components/orders-admin/orders-admin.component';
 import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
 import { ChatFullComponent } from './components/chat-full/chat-full.component';
+import { UsersPageComponent } from './components/users/users-page.component';
+import { AuthInterceptor } from './services/auth.interceptor';
 
 
 export function tokenGetter() {
@@ -67,6 +70,7 @@ export function tokenGetter() {
     ResaltarDirective,
     AddproductComponent,
     CartComponent,
+    CartWidgetComponent,
     OrderComponent,
     CheckoutComponent,
     ChatComponent,
@@ -76,6 +80,7 @@ export function tokenGetter() {
     OrdersAdminComponent,
     ChatWidgetComponent,
     EdadPipe,
+    UsersPageComponent,
 
   ],
   imports: [
@@ -103,7 +108,14 @@ export function tokenGetter() {
     ChatComponent,
     ChatWidgetComponent
   ],
-  providers: [DatePipe], // Agrega DatePipe en los proveedores
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    DatePipe
+  ], // Agrega DatePipe en los proveedores
   bootstrap: [AppComponent]
 })
 export class AppModule { }

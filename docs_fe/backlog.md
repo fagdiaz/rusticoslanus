@@ -32,6 +32,7 @@ Tareas del frontend para cambios chicos y controlados (Codex/IA).
 | P2 | COMPLETADA | Modal `AddproductComponent` reutilizado para alta y edición (Reactive Forms, `updateProduct` y `addProduct`). |
 | P3 | COMPLETADA | Soft delete admin-only via `softDeleteProduct(uidActual, id)` y recarga tras marcar `activo:false`. |
 | P4 | COMPLETADA | Cards muestran `imagenUrl` y lo ajustan con `object-fit: cover` y alto fijo, sin romper el layout. |
+| P5 | COMPLETADA | `CartService` centraliza el carrito; el header badge y `CartWidgetComponent` consumen `cartItems$`, y las cards usan `addProduct(product)` / `removeProduct(product)` para mantenerse sincronizadas con `/cart`. |
 
 ### NICE TO HAVE (Productos)
 - Categorías y filtros avanzados por price/orden/categoría.
