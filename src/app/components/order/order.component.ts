@@ -2,6 +2,14 @@
 import { AuthService } from 'src/app/services/auth.service';
 import { OrderService } from 'src/app/services/order.service';
 
+type PedidoEstadoCanon =
+  | 'creado'
+  | 'en_preparacion'
+  | 'entrega'
+  | 'entregado'
+  | 'cancelado';
+
+
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
@@ -15,29 +23,23 @@ export class OrderComponent implements OnInit {
   currentRole: string | null = null;
   clientePedidoActual: any | null = null;
 
-  steps = [
-    { id: 'pendiente', label: 'Pedido recibido' },
+  currentUserEmail: string | null = null;
+
+  steps: { id: PedidoEstadoCanon; label: string }[] = [
+    { id: 'creado', label: 'Creado' },
     { id: 'en_preparacion', label: 'En preparación' },
-    { id: 'listo', label: 'Listo para retirar' },
+    { id: 'entrega', label: 'En entrega' },
     { id: 'entregado', label: 'Entregado' }
   ];
 
-  backendToStep: Record<string, string> = {
-    pendiente: 'pendiente',
-    pending: 'pendiente',
-    creado: 'pendiente',
+  backendToEstadoCanon: Record<string, PedidoEstadoCanon> = {
+    creado: 'creado',
     en_preparacion: 'en_preparacion',
-    'en preparación': 'en_preparacion',
-    preparando: 'en_preparacion',
-    listo: 'listo',
-    'listo para retirar': 'listo',
-    'listo_para_retirar': 'listo',
-    en_proceso_de_entrega: 'entregado',
-    'en proceso de entrega': 'entregado',
-    entrega: 'entregado',
+    entrega: 'entrega',
+    'en_entrega': 'entrega',
+    'en_proceso_de_entrega': 'entrega',
     entregado: 'entregado',
-    cancelado: 'cancelado',
-    cancelada: 'cancelado'
+    cancelado: 'cancelado'
   };
 
   constructor(
@@ -50,15 +52,22 @@ export class OrderComponent implements OnInit {
     const currentRole = this.authService.currentRole;
     console.log('OrderComponent init', currentUser, currentRole);
 
+    this.authService.user$.subscribe((firebaseUser) => {
+      if (firebaseUser?.email) {
+        this.currentUserEmail = firebaseUser.email;
+      }
+    });
+
     this.authService.role$.subscribe((role) => {
       this.currentRole = role;
-      this.cargarPedidos(role, currentUser);
+      const freshUser = this.authService.getCurrentUser();
+      this.cargarPedidos(role, freshUser);
     });
   }
 
   private cargarPedidos(role: string | null, currentUser: any): void {
     if (role === 'cliente') {
-      const email = currentUser?.email;
+      const email = currentUser?.email || this.currentUserEmail;
       if (!email) {
         console.error('El usuario cliente no tiene email definido.');
         return;
@@ -128,8 +137,8 @@ export class OrderComponent implements OnInit {
       return false;
     }
 
-    const estado = this.normalizeEstado((pedido.estado ?? pedido.status ?? '').toString());
-    return this.backendToStep[estado] === 'cancelado';
+    const estadoCanon = this.normalizarEstado(pedido.estado ?? pedido.status);
+    return estadoCanon === 'cancelado';
   }
 
   private getCurrentStepIndex(pedido?: any): number {
@@ -137,16 +146,23 @@ export class OrderComponent implements OnInit {
       return 0;
     }
 
-    const raw = (pedido.estado ?? pedido.status ?? 'pendiente').toString();
-    const normalized = this.normalizeEstado(raw);
-    const mapped = this.backendToStep[normalized] ?? 'pendiente';
+    const estadoCanon = this.normalizarEstado(pedido.estado ?? pedido.status);
 
-    if (mapped === 'cancelado') {
+    if (estadoCanon === 'cancelado') {
       return -1;
     }
 
-    const index = this.steps.findIndex(step => step.id === mapped);
+    const index = this.steps.findIndex(step => step.id === estadoCanon);
     return index >= 0 ? index : 0;
+  }
+
+  private normalizarEstado(raw?: string | null): PedidoEstadoCanon {
+    if (!raw) {
+      return 'creado';
+    }
+
+    const sanitized = this.normalizeEstado(raw);
+    return this.backendToEstadoCanon[sanitized] ?? 'creado';
   }
 
   private normalizeEstado(value: string): string {
