@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface Product {
-  id: string;
+  id?: string;
   nombre: string;
   descripcion: string;
   precio: number | string;
   activo?: boolean;
-  imagenUrl?: string;
+  imagenUrl?: string | null;
   categoria?: string;
   orden?: number;
 }

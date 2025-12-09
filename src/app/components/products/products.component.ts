@@ -155,16 +155,27 @@ export class ProductsComponent implements OnInit {
   }
 
   onSoftDelete(product: Product): void {
-    if (!this.uidActual) return;
+    // Validación defensiva
+    if (!this.uidActual) {
+      console.error('[FE /products] onSoftDelete sin uidActual, se cancela');
+      return;
+    }
+
+    if (!product.id) {
+      console.error('[FE /products] onSoftDelete sin id de producto, se cancela', product);
+      return;
+    }
 
     if (!confirm(`¿Marcar como INACTIVO el producto "${product.nombre}"?`)) {
       return;
     }
 
-    this.productsService.softDeleteProduct(this.uidActual, product.id)
+    this.productsService
+      .softDeleteProduct(this.uidActual, product.id)
       .subscribe({
         next: (resp) => {
           console.log('[FE /products] softDelete OK', resp);
+          // Recargamos lista para que desaparezca de la vista de cliente
           this.cargarProductos(this.uidActual!);
         },
         error: (err) => {

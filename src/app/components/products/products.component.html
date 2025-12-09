@@ -22,39 +22,67 @@
         class="product-card"
         [class.inactivo]="!product.activo"
       >
-        <div class="product-content">
-          <div class="product-info">
-            <div class="producto-header">
-              <h2>{{ product.nombre }}</h2>
-              <span
-                *ngIf="rolActual === 'admin' && product.activo === false"
-                class="badge-inactivo"
-              >
-                INACTIVO
-              </span>
-            </div>
-
-            <div
-              class="producto-actions"
-              *ngIf="rolActual === 'admin'"
-            >
-            <button mat-button color="primary" (click)="openEditDialog(product)">
-                Editar
-              </button>
-
-              <button mat-button color="warn" (click)="onSoftDelete(product)">
-                Eliminar
-              </button>
-            </div>
-
-            <p class="description">Descripción: {{ product.descripcion }}</p>
-            <p>Precio: ${{ product.precio }}</p>
+        <div class="producto-card">
+          <div class="producto-imagen-wrapper" *ngIf="product.imagenUrl">
+            <img
+              [src]="product.imagenUrl"
+              [alt]="product.nombre"
+              class="producto-imagen product-img"
+            />
           </div>
 
-          <div class="add-to-cart-button">
-            <button mat-button color="primary" (click)="addProduct(product.id, product.nombre, product.descripcion, product.precio)">+</button>
-            <input type="number" [value]="getCartItemQuantity(product.id)" name="cantidad" />
-            <button mat-button color="primary" (click)="removeProduct(product.id)">-</button>
+          <div class="product-content">
+            <div class="product-info">
+              <div class="producto-header">
+                <h2>{{ product.nombre }}</h2>
+                <span
+                  *ngIf="rolActual === 'admin' && product.activo === false"
+                  class="badge-inactivo"
+                >
+                  INACTIVO
+                </span>
+              </div>
+
+              <div
+                class="producto-actions"
+                *ngIf="rolActual === 'admin'"
+              >
+                <button mat-button color="primary" (click)="openEditDialog(product)">
+                  Editar
+                </button>
+
+                <button mat-button color="warn" (click)="onSoftDelete(product)">
+                  Eliminar
+                </button>
+              </div>
+
+              <p class="description">Descripción: {{ product.descripcion }}</p>
+              <p>Precio: ${{ product.precio }}</p>
+            </div>
+
+            <div class="producto-acciones">
+              <button
+                mat-mini-fab
+                color="warn"
+                type="button"
+                (click)="removeProduct(product.id)"
+              >
+                -
+              </button>
+
+              <span class="producto-cantidad">
+                {{ getCartItemQuantity(product.id) || 0 }}
+              </span>
+
+              <button
+                mat-mini-fab
+                color="primary"
+                type="button"
+                (click)="addProduct(product.id, product.nombre, product.descripcion, product.precio)"
+              >
+                +
+              </button>
+            </div>
           </div>
         </div>
       </mat-card>

@@ -62,6 +62,7 @@
   - Archivos: src/app/components/users/users.component.ts/html.
 - Productos: iniciar carrusel y mostrar stock.
   - Archivos: src/app/components/products/products.component.*.
+- QA Productos: confirmar admin vs cliente (alta, edición, soft delete) y revisar imágenes en las cards sin alterar chat ni servicios.
 
 ## 6) Prompts ejemplo para Codex (limitar archivos y no tocar BE)
 ### Dia 1 - Chat Full input y mensaje vacio

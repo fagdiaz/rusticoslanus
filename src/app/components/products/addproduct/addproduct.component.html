@@ -1,7 +1,7 @@
-<div class="card-container" *ngIf="form">
+<div class="card-container" *ngIf="productForm">
   <mat-card>
     <h2>{{ isEditMode ? 'Editar Producto' : 'Añadir Producto' }}</h2>
-    <form [formGroup]="form">
+    <form [formGroup]="productForm">
       <mat-form-field class="full-width">
         <input matInput placeholder="Nombre" formControlName="nombre" />
       </mat-form-field>
@@ -11,6 +11,20 @@
       <mat-form-field class="full-width">
         <input matInput type="number" placeholder="Precio" formControlName="precio" />
       </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>URL de imagen</mat-label>
+        <input matInput placeholder="https://..." formControlName="imagenUrl" />
+        <mat-hint>Opcional. Puede ser un link de Firebase Storage o externo.</mat-hint>
+      </mat-form-field>
+
+      <div *ngIf="productForm.get('imagenUrl')?.value" class="preview-imagen">
+        <p>Preview:</p>
+        <img
+          [src]="productForm.get('imagenUrl')?.value"
+          [alt]="productForm.get('nombre')?.value || 'Imagen del producto'"
+          class="producto-imagen-preview"
+        />
+      </div>
 
       <div class="button-container">
         <button

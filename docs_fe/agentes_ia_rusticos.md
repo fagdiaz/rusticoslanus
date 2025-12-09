@@ -25,6 +25,7 @@ Cadena recomendada para cambios de chat FE: PM -> Arquitecto FE -> Implementador
 - Responsabilidades FE: convertir blueprint en codigo o en un prompt acotado para Codex FE; listar archivos exactos (chat.component, chat-full, chat.service, docs_fe), evitar mezclar BE.
 - Cuando entra: despues del Arquitecto FE.
 - Handoff: codigo listo o prompt listo para Codex FE.
+- Productos FE: al preparar un prompt que involucre `ProductsComponent`, `AddproductComponent` o `ProductsService`, confirmar los escenarios admin/cliente, alta, edición, soft delete e imágenes antes de pasarle el prompt a Codex FE; no mezclar con el flujo del chat.
 
 ## Codex FE
 - Responsabilidades FE: aplicar cambios en archivos indicados (componentes, servicios, docs_fe), mantener polling 8000 ms, limits DEFAULT/FILTER, unread, scroll, quota_exceeded; no tocar backend ni rutas fuera de alcance.

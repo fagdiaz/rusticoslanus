@@ -15,7 +15,7 @@ export class AddproductComponent implements OnInit {
   @Output() onDone = new EventEmitter<string>();
   isEditMode = false;
   uidActual: string | null = null;
-  form!: FormGroup;
+  productForm!: FormGroup;
 
   constructor(
     private productService: ProductsService,
@@ -29,10 +29,11 @@ export class AddproductComponent implements OnInit {
 
   ngOnInit(): void {
     this.isEditMode = !!this.producto;
-    this.form = this.fb.group({
+    this.productForm = this.fb.group({
       nombre: [this.producto?.nombre || '', Validators.required],
       descripcion: [this.producto?.descripcion || '', Validators.required],
-      precio: [this.producto?.precio || '', Validators.required]
+      precio: [this.producto?.precio || '', Validators.required],
+      imagenUrl: [this.producto?.imagenUrl || '']
     });
 
     this.authService.user$.pipe(take(1)).subscribe((user) => {
@@ -47,13 +48,17 @@ export class AddproductComponent implements OnInit {
         return;
       }
 
+      const formValue = this.productForm.value;
+      const productData: Product = {
+        ...this.producto,
+        nombre: formValue.nombre,
+        descripcion: formValue.descripcion,
+        precio: Number(formValue.precio),
+        imagenUrl: formValue.imagenUrl || null
+      };
+
       this.productService
-        .updateProduct(this.uidActual, {
-          id: this.producto.id,
-          nombre: this.form.value.nombre,
-          descripcion: this.form.value.descripcion,
-          precio: Number(this.form.value.precio)
-        })
+        .updateProduct(this.uidActual, productData)
         .subscribe(() => {
           this.onDone.emit('updated');
           this.dialogRef?.close('updated');
@@ -61,16 +66,18 @@ export class AddproductComponent implements OnInit {
       return;
     }
 
-    this.addProduct(this.form);
-  }
-
-  addProduct(form: FormGroup): void {
-    const productData = {
-      nombre: form.value.nombre,
-      descripcion: form.value.descripcion,
-      precio: form.value.precio
+    const formValue = this.productForm.value;
+    const newProductData: Product = {
+      nombre: formValue.nombre,
+      descripcion: formValue.descripcion,
+      precio: Number(formValue.precio),
+      imagenUrl: formValue.imagenUrl || null
     };
 
+    this.addProduct(newProductData);
+  }
+
+  addProduct(productData: Product): void {
     this.productService.addProduct(productData).subscribe(
       (response: any) => {
         console.log('Respuesta del servidor:', response);
@@ -83,7 +90,7 @@ export class AddproductComponent implements OnInit {
   }
 
   limpiarFormulario(form?: FormGroup): void {
-    const targetForm = form || this.form;
+    const targetForm = form || this.productForm;
     targetForm.reset();
   }
 }

@@ -21,3 +21,13 @@ Pendientes FE (rusticoslanus) con foco en chat y UX.
 ## Notas operativas
 - No mezclar FE + BE en el mismo prompt.
 - Validar siempre: unread, filtro, scroll interno, login admin + 2 clientes con mensajes cruzados.
+
+---
+## Productos (FE)
+### MUST
+- Ninguna deuda funcional crítica; la carga, alta/edición, imágenes y soft delete están operativas con validaciones básicas.
+
+### NICE TO HAVE
+- Validaciones más estrictas en formulario (precio positivo, URL valida, campos obligatorios más descriptivos).
+- Mejor UI responsive para grids (breakpoints para tablets/mobiles, ajuste de márgenes).
+- Mostrar información adicional como stock, categoría u orden en cada card.

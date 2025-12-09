@@ -106,3 +106,13 @@ Actua como Implementador FE. Genera un prompt para Codex FE que:
 - Si Codex rompe algo -> restaurar y repetir con prompt mas corto.
 - En chat: mantener autoSeleccionarDestinatario, polling 8000 ms, unread, scroll interno.
 - Probar login admin + 2 clientes, mensajes cruzados, filtro y badges tras cambios.
+
+### 10) Prompt Productos (FE)
+```
+Actua como Implementador FE. Genera un prompt que:
+- Modifique `ProductsComponent` (ts/html/css) y `AddproductComponent` para mejorar imágenes y edición admin-only.
+- Utilice `ProductsService` sin tocar otros servicios ni rutas.
+- Mantenga reglas de roles, soft delete y lógica de carrito existentes.
+- Detalle la necesidad: mostrar `imagenUrl` con object-fit, validar `uidActual`, recargar lista tras soft delete.
+- Entregue diffs/snippets para los archivos indicados.
+```

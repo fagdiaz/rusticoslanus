@@ -31,6 +31,12 @@ Frontend en Angular acoplado a backend Node/Express + Firestore. Vistas principa
 ### 2.4 ProductosComponent
 - Listado de productos desde backend.
 - Pendiente: carrusel, stock visible, mejora de estilo.
+### 2.5 Módulo Productos (FE)
+- **Flujo principal**: `ProductsComponent` espera al usuario actual (`authService.user$` o `getCurrentUser()`), suscribe `role$` y cuando obtiene `uidActual` llama a `ProductsService.getProducts(uidActual)` para poblar `Products: Product[]`. El carrito viene de `localStorage` e interactúa con `addProduct` / `removeProduct` sin tocar el backend.
+- **Reglas de visibilidad**: `rolActual` controla qué se muestra. El admin ve todos los productos (activos e inactivos), el botón “Añadir producto nuevo”, los controles “Editar”/“Eliminar” y el badge “INACTIVO”. Operadores/clientes sólo ven productos con `activo !== false` y no tienen botones de gestión.
+- **Productos con imagen**: cada card lee `imagenUrl` (si existe) y lo pinta con `object-fit: cover` dentro de un alto fijo (180px) para mantener la proporción sin deformar la tarjeta. Las imágenes llenan el ancho y tienen `border-radius` para respetar el card.
+- **Soft delete / edición**: `ProductsComponent.onSoftDelete` hace validaciones defensivas y llama a `softDeleteProduct(uidActual, id)` para marcar `activo:false` y recargar la lista. La edición reutiliza `AddproductComponent` dentro de un `MatDialog`, rellena el formulario con los datos y llama a `updateProduct` con el payload normalizado incluyendo `imagenUrl`.
+- El módulo Productos convive con el resto del FE sin tocar la lógica del chat ni los servicios de usuarios/pedidos; la documentación del chat sigue siendo válida como está.
 
 ### 2.5 PedidosComponent
 - Listado de pedidos por usuario/rol.

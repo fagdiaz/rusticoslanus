@@ -19,6 +19,11 @@ Define el flujo FE con agentes y pasos practicos. Backend (carpeta `srv`) queda 
 - Evita mezclar BE. Lista cambios moderados y entrega en diffs/snippets.
 - Pasa prompt a Codex FE.
 
+## 3.b Productos FE
+- Confirma que `ProductsComponent`, `AddproductComponent` y `ProductsService` siguen el patrón: rol desde `authService`, `getProducts(uidActual)` antes de render, y edición/soft delete vía dialog/modal.
+- Documenta o comunica en `docs_fe/estado_actual.md` y `docs_fe/backlog.md` los flujos actuales si se realizan cambios de producto.
+- Pruebas básicas: admin ve todos los productos y botones, cliente sólo activos; imagenes con `object-fit: cover` sin romper layout.
+
 ---
 ## 4. Codex FE
 - Aplica cambios en archivos indicados (solo FE). Respeta: polling 8000 ms, unread, mensajesByChatId, quota_exceeded, limites DEFAULT/FILTER, scroll interno.
@@ -46,6 +51,7 @@ Define el flujo FE con agentes y pasos practicos. Backend (carpeta `srv`) queda 
 - Chat full: sidebar con unread, filtro, mensajes con scroll, input fijo abajo.
 - Users: edad correcta o "-".
 - Productos/Pedidos: sin errores visibles.
+- Productos: admin crea/edita producto (incluyendo `imagenUrl`), soft delete recarga lista, clientes solo ven activos y sin botones.
 
 ---
 ## 8. Commits

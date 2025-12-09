@@ -25,6 +25,20 @@ Tareas del frontend para cambios chicos y controlados (Codex/IA).
 - Carrito/Pedidos: campo "observaciones/domicilio" en checkout y listado; orden/estado visible en pedidos.
 
 ---
+## Productos (FE)
+| TAREA | Estado | Detalle |
+| --- | --- | --- |
+| P1 | COMPLETADA | `ProductsService.getProducts(uidActual)` devuelve productos filtrados por rol; `ProductsComponent` espera `user$` y `role$` antes de cargar la lista. |
+| P2 | COMPLETADA | Modal `AddproductComponent` reutilizado para alta y edición (Reactive Forms, `updateProduct` y `addProduct`). |
+| P3 | COMPLETADA | Soft delete admin-only via `softDeleteProduct(uidActual, id)` y recarga tras marcar `activo:false`. |
+| P4 | COMPLETADA | Cards muestran `imagenUrl` y lo ajustan con `object-fit: cover` y alto fijo, sin romper el layout. |
+
+### NICE TO HAVE (Productos)
+- Categorías y filtros avanzados por price/orden/categoría.
+- Mejor UI responsive (cards, grids, móviles).
+- Paginación/carga incremental para listados largos.
+
+---
 ## PRIORIDAD BAJA / NICE TO HAVE (FE)
 - Paginacion o carga hacia mensajes mas viejos en el chat.
 - Indicadores de "escribiendo" en chats activos.
