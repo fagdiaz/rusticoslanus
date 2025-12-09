@@ -2,6 +2,42 @@
 
 <mat-card class="custom-card">
 
+  <section
+    *ngIf="currentRole === 'cliente' && clientePedidoActual"
+    class="client-stepper"
+  >
+    <div class="client-stepper__header">
+      <span class="client-stepper__id">
+        Pedido #
+        {{ clientePedidoActual.numeroPedido || clientePedidoActual.id || 'N/A' }}
+      </span>
+      <span class="client-stepper__status">
+        Estado actual:
+        {{ clientePedidoActual.estado || clientePedidoActual.status || 'Pendiente' }}
+      </span>
+    </div>
+
+    <div
+      class="order-cancelled-banner"
+      *ngIf="isPedidoCancelado(clientePedidoActual)"
+    >
+      Este pedido fue cancelado.
+    </div>
+
+    <mat-horizontal-stepper
+      class="client-stepper__stepper"
+      [linear]="false"
+      [selectedIndex]="clienteStepperIndex >= 0 ? clienteStepperIndex : 0"
+    >
+      <mat-step
+        *ngFor="let step of steps; let i = index"
+        [completed]="clienteStepperIndex >= 0 && i <= clienteStepperIndex"
+      >
+        <ng-template matStepLabel>{{ step.label }}</ng-template>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </section>
+
   <!-- 🔍 Barra de búsqueda -->
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Buscar pedido</mat-label>
@@ -20,7 +56,7 @@
         <th>Número Pedido</th>
         <th>Estado</th>
         <th>Cliente</th>
-        <th>Acciones</th>
+        <th *ngIf="currentRole !== 'cliente'">Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -28,7 +64,7 @@
         <td>{{ pedido.numeroPedido }}</td>
         <td>{{ pedido.status }}</td>
         <td>{{ pedido.nombre }}</td>
-        <td>
+        <td *ngIf="currentRole !== 'cliente'">
           <button mat-button color="primary" (click)="updateStatus(pedido, 'creado')">
             Creado
           </button>
@@ -51,7 +87,7 @@
   </div>
 
   <!-- 🟦 Stepper de estado -->
-  <mat-horizontal-stepper [linear]="true">
+  <mat-horizontal-stepper [linear]="true" *ngIf="currentRole !== 'cliente'">
     <mat-step label="state 1">
       <ng-template matStepLabel>Pedido Creado</ng-template>
     </mat-step>

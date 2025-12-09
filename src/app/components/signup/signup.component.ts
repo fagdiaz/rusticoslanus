@@ -5,21 +5,13 @@
  * - No se envía la contraseña en el payload al backend.
  */
 import { Component } from '@angular/core';
-import { FormControl, Validators, FormGroupDirective, NgForm, FormGroup, FormBuilder } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { Validators, FormGroup, FormBuilder, AbstractControl, ValidationErrors } from '@angular/forms';
 import { User } from 'src/app/entity/user';
 import { SignupService } from 'src/app/services/signup.service';
 import Swal from 'sweetalert2';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { parseISO, format } from 'date-fns';
 import { AuthService } from 'src/app/services/auth.service';
-
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
 
 @Component({
   selector: 'app-signup',
@@ -29,13 +21,9 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class SignupComponent {
   public user = new User();
 
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-
-  matcher = new MyErrorStateMatcher();
-
-  hide = true;
-
   public signupForm: FormGroup;
+  showPassword = false;
+  loading = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,17 +31,21 @@ export class SignupComponent {
     private authService: AuthService
   ) {
     this.signupForm = this.formBuilder.group({
-      email: ['', [Validators.email, Validators.required]],
-      pass: ['', [Validators.required, Validators.minLength(8)]],
-      pass2: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
       dni: [''],
       province: [''],
       date: ['']
+    }, {
+      validators: [this.passwordsMatchValidator('password', 'confirmPassword')]
     });
   }
 
-  get emailInput() { return this.signupForm.get('email'); }
-  get passwordInput() { return this.signupForm.get('pass'); }
+  get email() { return this.signupForm.get('email'); }
+  get password() { return this.signupForm.get('password'); }
+  get confirmPassword() { return this.signupForm.get('confirmPassword'); }
+
   get edad(): number | null {
     const fecha = this.signupForm.get('date')?.value;
     return fecha ? this.calcularEdad(fecha) : null;
@@ -64,59 +56,79 @@ export class SignupComponent {
   }
 
   public signup() {
-    if (this.signupForm.status === "VALID") {
-      const email = this.signupForm.get("email")?.value;
-      const password = this.signupForm.get("pass")?.value;
-      const fechaNacimiento = this.signupForm.get("date")?.value;
-      const fechaNacimientoDate = parseISO(fechaNacimiento);
-      const fechaNacimientoFormateada = format(fechaNacimientoDate, 'dd/MM/yyyy');
-
-      const usuario = {
-        email,
-        dni: this.signupForm.get("dni")?.value,
-        provincia: this.signupForm.get("province")?.value,
-        fnac: fechaNacimientoFormateada,
-      };
-
-      const auth = getAuth();
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          console.log("Usuario creado en Firebase:", userCredential.user.uid);
-
-          this.signUpService.signup(usuario, userCredential.user.uid).subscribe((data: any) => {
-            console.log("Respuesta signup backend:", data);
-            if (data.res == "ok") {
-              this.authService.forceReloadRole(userCredential.user.uid, true);
-              Swal.fire({
-                title: 'Exito!',
-                text: 'Se registro correctamente',
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
-              })
-              this.limpiarFormulario(this.signupForm);
-            }
-          });
-        })
-         .catch((error) => {
-            console.error("Error al crear usuario en Firebase:", error);
-
-            if (error.code === 'auth/email-already-in-use') {
-              Swal.fire({
-                title: 'Correo ya registrado',
-                text: 'Ese correo ya tiene una cuenta. Inicie sesion desde "Ingresar".',
-                icon: 'warning',
-                confirmButtonText: 'Aceptar'
-              });
-            } else {
-              Swal.fire({
-                title: 'Error',
-                text: 'No se pudo crear la cuenta. Intente nuevamente mas tarde.',
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
-              });
-            }
-          });
+    if (this.signupForm.invalid) {
+      this.signupForm.markAllAsTouched();
+      return;
     }
+
+    this.loading = true;
+
+    const email = this.signupForm.get('email')?.value;
+    const password = this.signupForm.get('password')?.value;
+    const fechaNacimiento = this.signupForm.get('date')?.value;
+    const fechaNacimientoDate = parseISO(fechaNacimiento);
+    const fechaNacimientoFormateada = format(fechaNacimientoDate, 'dd/MM/yyyy');
+
+    const usuario = {
+      email,
+      dni: this.signupForm.get('dni')?.value,
+      provincia: this.signupForm.get('province')?.value,
+      fnac: fechaNacimientoFormateada,
+    };
+
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log('Usuario creado en Firebase:', userCredential.user.uid);
+
+        this.signUpService.signup(usuario, userCredential.user.uid).subscribe((data: any) => {
+          console.log('Respuesta signup backend:', data);
+          if (data.res == 'ok') {
+            this.authService.forceReloadRole(userCredential.user.uid, true);
+            Swal.fire({
+              title: 'Exito!',
+              text: 'Se registro correctamente',
+              icon: 'success',
+              confirmButtonText: 'Aceptar'
+            });
+            this.limpiarFormulario(this.signupForm);
+          }
+          this.loading = false;
+        }, () => {
+          this.loading = false;
+        });
+      })
+      .catch((error) => {
+        console.error('Error al crear usuario en Firebase:', error);
+
+        if (error.code === 'auth/email-already-in-use') {
+          Swal.fire({
+            title: 'Correo ya registrado',
+            text: 'Ese correo ya tiene una cuenta. Inicie sesion desde \"Ingresar\".',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar'
+          });
+        } else {
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo crear la cuenta. Intente nuevamente mas tarde.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
+        }
+        this.loading = false;
+      });
+  }
+
+  private passwordsMatchValidator(passwordKey: string, confirmKey: string) {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const password = group.get(passwordKey)?.value;
+      const confirm = group.get(confirmKey)?.value;
+      if (password && confirm && password !== confirm) {
+        return { passwordsMismatch: true };
+      }
+      return null;
+    };
   }
 
   private calcularEdad(fechaIso: string): number | null {
