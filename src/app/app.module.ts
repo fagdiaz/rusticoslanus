@@ -43,6 +43,7 @@ import { ChatWidgetComponent } from './components/chat-widget/chat-widget.compon
 import { ChatFullComponent } from './components/chat-full/chat-full.component';
 import { UsersPageComponent } from './components/users/users-page.component';
 import { AuthInterceptor } from './services/auth.interceptor';
+import { ChangePasswordComponent } from './components/admin/change-password/change-password.component';
 
 
 export function tokenGetter() {
@@ -81,6 +82,7 @@ export function tokenGetter() {
     ChatWidgetComponent,
     EdadPipe,
     UsersPageComponent,
+    ChangePasswordComponent,
 
   ],
   imports: [

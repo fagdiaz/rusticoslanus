@@ -12,9 +12,8 @@ import { OrderService } from '../../services/order.service';
 export class OrdersAdminComponent implements OnInit, OnDestroy {
   pedidos: any[] = [];
   pedidosFiltrados: any[] = [];
-  filtroEstado = '';
   filtroEmail = '';
-  filtroNumeroPedido = '';
+  filtroDni = '';
   isLoading = false;
   currentRole: string | null = null;
 
@@ -43,63 +42,49 @@ export class OrdersAdminComponent implements OnInit, OnDestroy {
   }
 
   loadOrders(): void {
-  this.isLoading = true;
+    this.isLoading = true;
 
-  // Solo mandamos filtros que sí puede usar el backend bien:
-  const filters: { status?: string; email?: string; numeroPedido?: number } = {};
-
-  if (this.filtroEstado) {
-    filters.status = this.filtroEstado;
-  }
-
-  // OJO: ya NO mandamos filtroEmail acá para permitir búsquedas parciales en FE
-
-  if (this.filtroNumeroPedido) {
-    const numero = parseInt(this.filtroNumeroPedido, 10);
-    if (!Number.isNaN(numero)) {
-      filters.numeroPedido = numero;
-    }
-  }
-
-  this.orderService.getAllOrders(filters).subscribe({
-    next: (orders) => {
-      this.pedidos = orders || [];
-      this.aplicarFiltrosLocales();   // aplicamos email en FE
-      this.isLoading = false;
-    },
-    error: (err) => {
-      console.error('Error al cargar pedidos', err);
-      this.isLoading = false;
-      this.pedidos = [];
-      this.pedidosFiltrados = [];
-    }
-  });
-}
-
-// Nuevo método:
-aplicarFiltrosLocales(): void {
-  let lista = [...this.pedidos];
-
-  // filtro parcial por email
-  if (this.filtroEmail && this.filtroEmail.trim()) {
-    const f = this.filtroEmail.trim().toLowerCase();
-    lista = lista.filter(p => {
-      const email = (p.emailUsuario || p.email || '').toLowerCase();
-      return email.includes(f);
+    this.orderService.getAllOrders().subscribe({
+      next: (orders) => {
+        this.pedidos = orders || [];
+        this.aplicarFiltrosLocales();   // aplicamos filtros en FE
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar pedidos', err);
+        this.isLoading = false;
+        this.pedidos = [];
+        this.pedidosFiltrados = [];
+      }
     });
   }
 
-  this.pedidosFiltrados = lista;
-}
+  aplicarFiltrosLocales(): void {
+    const fEmail = this.filtroEmail.trim().toLowerCase();
+    const fDni = this.filtroDni.trim().toLowerCase();
 
+    this.pedidosFiltrados = this.pedidos.filter(p => {
+      const email = (p.emailUsuario || p.email || '').toLowerCase();
+      const dni = (p.dni || '').toString().toLowerCase();
+      const matchEmail = fEmail ? email.includes(fEmail) : true;
+      const matchDni = fDni ? dni.includes(fDni) : true;
+      return matchEmail && matchDni;
+    });
+  }
 
   onFilterChange(): void {
-    this.loadOrders();
+    this.aplicarFiltrosLocales();
+  }
+
+  limpiarFiltros(): void {
+    this.filtroEmail = '';
+    this.filtroDni = '';
+    this.aplicarFiltrosLocales();
   }
 
   updateStatus(pedido: any, nuevoStatus: string): void {
     if (!pedido || !pedido.id) {
-      console.error('Pedido inválido o sin ID.');
+      console.error('Pedido invalido o sin ID.');
       return;
     }
 

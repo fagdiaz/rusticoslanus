@@ -1,8 +1,79 @@
 :host {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  display: block;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* HERO */
+.about-hero {
+  position: relative;
+  width: 100%;
+  height: 55vh;
+  min-height: 300px;
+  background: url('/assets/logo/logo2.jpg') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.about-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+  padding: 0 1rem;
+}
+
+.about-content h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 0.5rem;
+}
+
+.about-content {
+  margin-top: 8vh; /* Podés probar entre 6vh y 12vh según cómo lo veas */
+}
+
+/* SECTIONS */
+.about-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.about-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #3a2f28;
+}
+
+.about-section p {
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.65rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* GRACIAS */
+.thanks h2 {
+  color: #b45309;
+}
+
+.thanks p {
+  font-weight: 500;
+  color: #2b1a0f;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .about-hero {
+    height: 45vh;
   }
+}

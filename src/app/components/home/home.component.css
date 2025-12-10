@@ -1,8 +1,230 @@
 :host {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  display: block;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* HERO */
+.home-hero {
+  position: relative;
+  width: 100%;
+  min-height: 60vh;
+  padding: 3rem 1rem;
+  background: url('/assets/logo/logo1.jpg') center/cover no-repeat;
+  display: flex;
+  align-items: flex-start; /* sube el contenido */
+  justify-content: center;
+}
+
+.home-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.hero-content {
+  margin-top: 4vh; /* sube título y subtítulo */
+  text-align: center;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+
+.home-title {
+  font-size: 2.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.home-subtitle {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.hero-btn {
+  margin-top: 1.5rem; /* baja el botón */
+}
+
+/* COCINA */
+.home-cocina {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  background: url('/assets/working/working.jpg') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.home-cocina::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.cocina-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #fff;
+  max-width: 640px;
+}
+
+/* DESTACADOS GRID */
+.home-destacados {
+  padding: 3rem 1rem;
+  background: #f8f4ef;
+}
+
+.section-heading h2 {
+  margin: 0 0 0.25rem;
+}
+
+.section-heading p {
+  margin: 0;
+  color: #555;
+}
+
+.destacados-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.5rem;
+}
+
+.destacado-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.destacado-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.destacado-card__body {
+  padding: 1rem;
+}
+
+.destacado-card__price {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  color: #b45309;
+}
+
+/* CARRUSEL */
+.home-carousel {
+  padding: 3rem 1rem 4rem;
+}
+
+.carousel-title {
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.carousel-slide {
+  flex: 1;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.slide-image-wrapper {
+  flex: 1 1 260px;
+  max-width: 400px;
+}
+
+.slide-image {
+  width: 100%;
+  height: 350px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.slide-info {
+  flex: 1 1 200px;
+  max-width: 360px;
+}
+
+.slide-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.slide-description {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.slide-price {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Flechas */
+.nav-btn {
+  border: none;
+  background: transparent;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+  user-select: none;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.nav-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.carousel-dots button,
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d7d7d7;
+  border: 2px solid #ffffffaa;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.carousel-dots button:hover,
+.dot:hover {
+  transform: scale(1.15);
+}
+
+.carousel-dots button.active,
+.dot.active {
+  background: #2f2a28;
+  border-color: #fff;
+  transform: scale(1.2);
+}

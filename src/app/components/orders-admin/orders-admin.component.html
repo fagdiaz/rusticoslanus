@@ -1,73 +1,74 @@
-<div class="orders-admin-container">
-  <h2>Gestión de pedidos</h2>
-
-  <mat-card class="filters-card">
-    <div class="filters-row">
-      <mat-form-field appearance="outline">
-        <mat-label>Estado</mat-label>
-        <mat-select [(ngModel)]="filtroEstado" (selectionChange)="onFilterChange()">
-          <mat-option value="">Todos</mat-option>
-          <mat-option value="creado">Creado</mat-option>
-          <mat-option value="en preparación">En preparación</mat-option>
-          <mat-option value="en proceso de entrega">En proceso de entrega</mat-option>
-          <mat-option value="entregado">Entregado</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Email cliente</mat-label>
-        <input matInput [(ngModel)]="filtroEmail" (keyup.enter)="onFilterChange()">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Número de pedido</mat-label>
-        <input matInput type="number" [(ngModel)]="filtroNumeroPedido" (keyup.enter)="onFilterChange()">
-      </mat-form-field>
-
-      <div class="filter-actions">
-        <button mat-raised-button color="primary" (click)="loadOrders()">
-          Buscar
-        </button>
-        <button mat-stroked-button color="accent" (click)="filtroEstado=''; filtroEmail=''; filtroNumeroPedido=''; onFilterChange();">
-          Limpiar
-        </button>
+<div class="admin-page">
+  <header class="admin-header">
+    <div>
+      <p class="eyebrow">Administración</p>
+      <h2>Pedidos</h2>
+    </div>
+    <div class="filters-bar">
+      <label class="filter-field">
+        <span>Email</span>
+        <input
+          type="text"
+          placeholder="filtrar por email"
+          [(ngModel)]="filtroEmail"
+          (keyup.enter)="onFilterChange()"
+        />
+      </label>
+      <label class="filter-field">
+        <span>DNI</span>
+        <input
+          type="text"
+          placeholder="filtrar por DNI"
+          [(ngModel)]="filtroDni"
+          (keyup.enter)="onFilterChange()"
+        />
+      </label>
+      <div class="filters-actions">
+        <button type="button" class="btn primary" (click)="loadOrders()">Refrescar</button>
+        <button type="button" class="btn ghost" (click)="limpiarFiltros()">Limpiar</button>
       </div>
     </div>
-  </mat-card>
+  </header>
 
-  <mat-card class="table-card">
-    <div *ngIf="isLoading">Cargando pedidos...</div>
+  <section class="admin-body">
+    <div *ngIf="isLoading" class="status">Cargando pedidos...</div>
 
-    <div *ngIf="!isLoading && !pedidosFiltrados.length" class="empty-state">
-      No se encontraron pedidos con los filtros aplicados.
+    <div class="table-container" *ngIf="!isLoading">
+      <div *ngIf="!pedidosFiltrados.length" class="empty-state">
+        No se encontraron pedidos con los filtros aplicados.
+      </div>
+
+      <div class="table-wrapper" *ngIf="pedidosFiltrados.length">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th># Pedido</th>
+              <th>Email</th>
+              <th>DNI</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+              <th>Total</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of pedidosFiltrados">
+              <td>{{ p.numeroPedido || p.id }}</td>
+              <td>{{ p.emailUsuario || p.email }}</td>
+              <td>{{ p.dni || '' }}</td>
+              <td>{{ p.status }}</td>
+              <td>{{ p.fecha || p.createdAt || '' }}</td>
+              <td>{{ p.total || p.montoTotal || p.totalCompra || '' }}</td>
+              <td class="table-actions">
+                <button class="action-btn" type="button" (click)="updateStatus(p, 'creado')">Creado</button>
+                <button class="action-btn" type="button" (click)="updateStatus(p, 'en preparación')">Preparación</button>
+                <button class="action-btn" type="button" (click)="updateStatus(p, 'en proceso de entrega')">Entrega</button>
+                <button class="action-btn" type="button" (click)="updateStatus(p, 'entregado')">Entregado</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-
-    <table class="orders-table" *ngIf="!isLoading && pedidosFiltrados.length">
-      <thead>
-        <tr>
-          <th># Pedido</th>
-          <th>Estado</th>
-          <th>Cliente</th>
-          <th>Email</th>
-          <th>UID</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let p of pedidosFiltrados">
-          <td>{{ p.numeroPedido || p.id }}</td>
-          <td>{{ p.status }}</td>
-          <td>{{ p.nombre || p.cliente }}</td>
-          <td>{{ p.emailUsuario || p.email }}</td>
-          <td>{{ p.uid }}</td>
-          <td class="actions-cell">
-            <button mat-stroked-button color="primary" (click)="updateStatus(p, 'creado')">Creado</button>
-            <button mat-stroked-button color="accent" (click)="updateStatus(p, 'en preparación')">Preparación</button>
-            <button mat-stroked-button color="accent" (click)="updateStatus(p, 'en proceso de entrega')">Entrega</button>
-            <button mat-raised-button color="primary" (click)="updateStatus(p, 'entregado')">Entregado</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </mat-card>
+  </section>
 </div>

@@ -12,6 +12,7 @@ import { CartService } from 'src/app/services/cart.service';
 export class HeaderComponent implements OnInit {
   userName: string | null = null;
   rolActual: string | null = null;
+  rol: string | null = null;
   quotaExceeded = false;
   isCartOpen = false;
   cartCount$: Observable<number>;
@@ -34,13 +35,16 @@ export class HeaderComponent implements OnInit {
         } else {
           this.userName = null;
         }
+        this.rol = (user as any).rol || null;
       } else {
         this.userName = null;
+        this.rol = null;
       }
     });
 
     this.authService.role$.subscribe(rol => {
       this.rolActual = rol ? rol.toLowerCase() : null;
+      this.rol = this.rolActual;
       console.log('ROL EN HEADER:', this.rolActual);
     });
 

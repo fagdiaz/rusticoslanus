@@ -23,15 +23,16 @@
         [class.inactivo]="!product.activo"
       >
         <div class="producto-card">
-          <div class="producto-imagen-wrapper" *ngIf="product.imagenUrl">
+          <div class="producto-imagen-wrapper">
             <img
-              [src]="product.imagenUrl"
+              [src]="getImagenProducto(product)"
               [alt]="product.nombre"
               class="producto-imagen product-img"
+              loading="lazy"
             />
           </div>
 
-          <div class="product-content">
+          <div class="product-content product-card__body">
             <div class="product-info">
               <div class="producto-header">
                 <h2>{{ product.nombre }}</h2>
@@ -57,7 +58,7 @@
               </div>
 
               <p class="description">Descripción: {{ product.descripcion }}</p>
-              <p>Precio: ${{ product.precio }}</p>
+              <p class="product-card__price">Precio: ${{ product.precio }}</p>
             </div>
 
             <div class="producto-acciones">

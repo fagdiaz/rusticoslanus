@@ -17,28 +17,30 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
 import { OrderComponent } from './components/order/order.component';
 import { OrdersAdminComponent } from './components/orders-admin/orders-admin.component';
 import { ChatFullComponent } from './components/chat-full/chat-full.component';
+import { ChangePasswordComponent } from './components/admin/change-password/change-password.component';
 
 
-const routes: Routes = [  
-  {path:'home',component:HomeComponent},  
-  {path:'signup',component:SignupComponent, children:[{path:'hola',component:HomeComponent}]}, 
-  {path:'' ,component:HomeComponent}, 
-  {path:'signin' ,component:SigninComponent}, 
-  {path:'users' ,component:UsersPageComponent, canActivate: [AdminGuard]},
-  //{path:'users', component: UsersComponent,canActivate:[TokenGuard]},
-  {path:'signup' ,component:SignupComponent}, 
-  {path:'products', component:ProductsComponent},
-  {path:'about', component:AboutComponent},
-  {path:'account', component:AccountComponent},
-  {path:'addproduct', component:AddproductComponent, canActivate: [AuthGuard]},
-  {path:'cart',component:CartComponent},
-  {path:'checkout',component:CheckoutComponent},
-  {path:'order',component:OrderComponent},
-  {path:'chat',component:ChatFullComponent},
-  {path:'admin/pedidos',component:OrdersAdminComponent},
-  {path:'**',component:ErrorComponent}
-  
-
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'home', component: HomeComponent },
+  {
+    path: 'signup',
+    component: SignupComponent,
+    children: [{ path: 'hola', component: HomeComponent }],
+  },
+  { path: 'signin', component: SigninComponent },
+  { path: 'users', component: UsersPageComponent, canActivate: [AdminGuard] },
+  { path: 'products', component: ProductsComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'account', component: AccountComponent },
+  { path: 'addproduct', component: AddproductComponent, canActivate: [AuthGuard] },
+  { path: 'cart', component: CartComponent },
+  { path: 'checkout', component: CheckoutComponent },
+  { path: 'order', component: OrderComponent },
+  { path: 'chat', component: ChatFullComponent },
+  { path: 'admin/pedidos', component: OrdersAdminComponent },
+  { path: 'admin/change-password', component: ChangePasswordComponent, canActivate: [TokenGuard] },
+  { path: '**', component: ErrorComponent }
 ];
 
 @NgModule({

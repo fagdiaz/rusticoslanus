@@ -114,6 +114,14 @@ export class ProductsComponent implements OnInit {
     return this.cartService.getQuantity(productId);
   }
 
+  getImagenProducto(prod: any): string {
+    if (prod.imagen && prod.imagen.trim().length > 0) {
+      return prod.imagen;
+    }
+    const id = (prod.id || '').toString().toLowerCase();
+    return `/assets/sandwiches/${id}.jpg`;
+  }
+
   mostrarProducto(p: Product): boolean {
     if (this.rolActual === 'admin') return true;
     return p.activo !== false;

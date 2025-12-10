@@ -1,84 +1,80 @@
-<div class="users-page">
-  <header class="users-page__header">
-    <h2>Control de usuarios</h2>
-    <div class="filters">
-      <input
-        type="text"
-        placeholder="Buscar por email o nombre"
-        [(ngModel)]="filtroTexto"
-      />
-      <select [(ngModel)]="filtroRol">
-        <option value="">Todos los roles</option>
-        <option value="admin">Admin</option>
-        <option value="operador">Operador</option>
-        <option value="cliente">Cliente</option>
-      </select>
-      <select [(ngModel)]="filtroEstado">
-        <option value="">Todos los estados</option>
-        <option value="activos">Activos</option>
-        <option value="inactivos">Inactivos</option>
-      </select>
-      <div class="filters__actions">
-        <button type="button" (click)="aplicarFiltros()">Aplicar</button>
-        <button type="button" (click)="limpiarFiltros()">Limpiar</button>
+<div class="admin-page">
+  <header class="admin-header">
+    <div>
+      <p class="eyebrow">Administracion</p>
+      <h2>Usuarios</h2>
+    </div>
+    <div class="filters-bar">
+      <label class="filter-field">
+        <span>Email</span>
+        <input
+          type="text"
+          placeholder="filtrar por email"
+          [(ngModel)]="filtroEmail"
+          (keyup.enter)="aplicarFiltros()"
+        />
+      </label>
+      <label class="filter-field">
+        <span>DNI</span>
+        <input
+          type="text"
+          placeholder="filtrar por DNI"
+          [(ngModel)]="filtroDni"
+          (keyup.enter)="aplicarFiltros()"
+        />
+      </label>
+      <div class="filters-actions">
+        <button type="button" class="btn primary" (click)="aplicarFiltros()">Aplicar</button>
+        <button type="button" class="btn ghost" (click)="limpiarFiltros()">Limpiar</button>
       </div>
     </div>
   </header>
 
-  <section class="users-page__body">
-    <div *ngIf="loading" class="users-page__status">Cargando usuarios...</div>
-    <div *ngIf="error" class="users-page__error">{{ error }}</div>
+  <section class="admin-body">
+    <div *ngIf="loading" class="status">Cargando usuarios...</div>
+    <div *ngIf="error" class="status error">{{ error }}</div>
 
-    <table *ngIf="!loading && usuarios.length" class="users-table">
-      <thead>
-        <tr>
-          <th>UID</th>
-          <th>Nombre</th>
-          <th>Email</th>
-          <th>Rol</th>
-          <th>Activo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of usuarios">
-          <td>{{ user.uid }}</td>
-          <td>{{ user.displayName || 'Sin nombre' }}</td>
-          <td>{{ user.email }}</td>
-          <td>
-          <select #rolSelect [value]="user.rol" (change)="onRolChange(user, rolSelect.value)">
-              <option value="admin">Admin</option>
-              <option value="operador">Operador</option>
-              <option value="cliente">Cliente</option>
-            </select>
-          </td>
-          <td class="estado-cell">
-            <span
-              *ngIf="user.activo"
-              class="estado-label estado-activo"
-            >
-              Usuario activado
-            </span>
-            <span
-              *ngIf="!user.activo"
-              class="estado-label estado-inactivo"
-            >
-              Usuario desactivado
-            </span>
+    <div class="table-container" *ngIf="!loading">
+      <div *ngIf="!usuariosFiltrados.length" class="empty-state">
+        No hay usuarios para mostrar.
+      </div>
 
-            <button
-              type="button"
-              class="estado-btn"
-              (click)="onActivoToggle(user)"
-            >
-              {{ user.activo ? 'Desactivar' : 'Activar' }}
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div *ngIf="!loading && !usuarios.length" class="users-page__empty">
-      No hay usuarios para mostrar.
+      <div class="table-wrapper" *ngIf="usuariosFiltrados.length">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>DNI</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of usuariosFiltrados">
+              <td>{{ user.email }}</td>
+              <td>{{ user.dni ? user.dni : 'N/A' }}</td>
+              <td class="table-control">
+                <select #rolSelect [value]="user.rol" (change)="onRolChange(user, rolSelect.value)">
+                  <option value="admin">Admin</option>
+                  <option value="operador">Operador</option>
+                  <option value="cliente">Cliente</option>
+                </select>
+              </td>
+              <td>
+                <span class="estado-pill" [class.on]="user.activo" [class.off]="!user.activo">
+                  {{ user.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td class="table-actions">
+                <button type="button" class="action-btn" (click)="onActivoToggle(user)">
+                  {{ user.activo ? 'Desactivar' : 'Activar' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 </div>

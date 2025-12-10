@@ -56,7 +56,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.msgSub = this.chatService.messages$.subscribe((msgs) => {
       this.mensajes = msgs || [];
       this.isLoading = false;
-      this.scrollToBottom();
+      setTimeout(() => this.scrollToBottom(), 0);
     });
 
     this.quotaSub = this.chatService.quotaExceeded$.subscribe((flag) => {

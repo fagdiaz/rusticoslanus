@@ -4,4 +4,5 @@ export interface UserAdminView {
   displayName?: string | null;
   rol: 'admin' | 'operador' | 'cliente';
   activo: boolean;
+  dni?: string;
 }

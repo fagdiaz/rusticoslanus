@@ -1,5 +1,92 @@
-<p>home works!</p>
-<p>Lorem, ipsum dolor sit amet consectetur 
-    adipisicing elit. Obcaecati qui facere velit dignissimos
-     reiciendis corporis magnam, animi amet rerum rem laudantium 
-     distinctio adipisci quibusdam possimus iure fugit dolorem ut error!</p>
+<!-- HERO -->
+<section class="home-hero">
+  <div class="hero-content">
+    <h1 class="home-title">RusticosLanus</h1>
+    <p class="home-subtitle">
+      Sandwiches, braseados y algo rico para cada momento.
+    </p>
+
+    <button
+      mat-raised-button
+      color="primary"
+      class="hero-btn"
+      routerLink="/products"
+    >
+      Ver menú
+    </button>
+  </div>
+</section>
+
+<!-- COCINA -->
+<section class="home-cocina">
+  <div class="cocina-content">
+    <h2>Nuestra cocina</h2>
+    <p>Pan artesanal, braseado lento y sabores reales hechos en casa.</p>
+  </div>
+</section>
+
+<!-- DESTACADOS GRID -->
+<section class="home-destacados">
+  <div class="section-heading">
+    <h2>Productos destacados</h2>
+    <p>Selección pensada para cada momento.</p>
+  </div>
+
+  <div class="destacados-grid">
+    <article class="destacado-card" *ngFor="let prod of productosDestacados">
+      <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy" />
+      <div class="destacado-card__body">
+        <h3>{{ prod.nombre }}</h3>
+        <p>{{ prod.descripcion }}</p>
+        <span class="destacado-card__price" *ngIf="prod.precioDesde">
+          Desde ${{ prod.precioDesde }}
+        </span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- CARRUSEL SIMPLE -->
+<section class="home-carousel">
+  <h2 class="carousel-title">Especialidades en movimiento</h2>
+
+  <div class="carousel-container" *ngIf="productosDestacados?.length">
+    <button class="nav-btn prev" type="button" (click)="irAlAnterior()">
+      
+    </button>
+
+    <div class="carousel-slide">
+      <ng-container *ngIf="productosDestacados[currentSlideIndex] as producto">
+        <div class="slide-image-wrapper">
+          <img
+            [src]="producto.imagen"
+            [alt]="producto.nombre"
+            class="slide-image"
+            loading="lazy"
+          />
+        </div>
+        <div class="slide-info">
+          <h3 class="slide-title">{{ producto.nombre }}</h3>
+          <p class="slide-description">{{ producto.descripcion }}</p
+>          <p class="slide-price" *ngIf="producto.precioDesde">
+            Desde ${{ producto.precioDesde }}
+          </p>
+        </div>
+      </ng-container>
+    </div>
+
+    <button class="nav-btn next" type="button" (click)="irAlSiguiente()">
+      
+    </button>
+  </div>
+
+  <div class="carousel-dots" *ngIf="productosDestacados?.length">
+    <button
+      type="button"
+      class="dot"
+      *ngFor="let prod of productosDestacados; let i = index"
+      [class.active]="i === currentSlideIndex"
+      (click)="irASlide(i)"
+    ></button>
+  </div>
+</section>

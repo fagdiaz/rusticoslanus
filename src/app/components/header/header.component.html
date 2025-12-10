@@ -41,6 +41,13 @@
         >
           Control de usuarios
         </button>
+        <button
+          mat-menu-item
+          *ngIf="rol === 'admin'"
+          routerLink="/admin/change-password"
+        >
+          Cambiar contraseña
+        </button>
         <button mat-menu-item (click)="logout()" *ngIf="checkIsauthenticated">
             Cerrar Sesión
         </button>
